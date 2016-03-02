@@ -1,0 +1,40 @@
+{
+    "name": "mix-cli",
+    "description": "Mix is a tool for front end develop(the pipe build system)",
+    "version": "0.0.8",
+    "main": "mix.js",
+    "bin": {
+        "mix": "bin/mix"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yangjunlong/mix.git"
+    },
+    "dependencies": {
+        "colors": "1.1.2",
+        "commander": "2.9.0",
+        "mix-command-server": ">=0.0.1"
+    },
+    "keywords": [
+        "fis",
+        "mix"
+    ],
+    "bugs": {
+        "url": "https://github.com/yangjunlong/mix/issues"
+    },
+    "author": {
+        "name": "sobird"
+    },
+    "license": "ISC",
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/yangjunlong/mix/blob/master/LICENSE"
+        }
+    ],
+    "readmeFilename": "README.md",
+    "homepage": "https://github.com/yangjunlong/mix#readme"
+}
