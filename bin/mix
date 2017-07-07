@@ -6,4 +6,4 @@
  * @version $Id$
  */
 
-require('../mix.js').run(process.argv);
+require('../mix.js').run();

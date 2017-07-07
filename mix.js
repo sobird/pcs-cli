@@ -155,6 +155,7 @@ mix.require.prefixes = ['mix'];
 mix.log = require('./lib/log.js');
 mix.config = require('./lib/config.js');
 mix.util = require('./lib/util.js');
+mix.server = require('./lib/server.js');
 
 // Gets info from package.json
 mix.info = mix.util.readJSON(__dirname + '/package.json');
@@ -178,11 +179,26 @@ mix.run = function() {
 
     mix.commands.forEach(function(name) {
         var cmd = mix.require('command', name);
-        program
+
+        cmd.option(program
             .command(cmd.name)
             .alias(cmd.alias)
             .usage(cmd.usage)
             .description(cmd.desc)
+        )
+        .action(function(){
+            this.on('--help', function() {
+                // todo
+                console.log('');
+            });
+                
+            cmd.command(this);
+            //cmd.option(this);
+
+            cmd.action.apply(this, arguments);
+                
+            //this.help();
+        });
     });
 
     program.parse(process.argv);
