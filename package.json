@@ -15,7 +15,7 @@
     },
     "dependencies": {
         "colors": "1.1.2",
-        "commander": "2.9.0",
+        "commander": "2.11.0",
         "mix-command-server": ">=0.0.1"
     },
     "keywords": [

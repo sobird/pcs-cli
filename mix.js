@@ -84,10 +84,10 @@ Function.prototype.derive = function(constructor, proto){
  * @return <Object> instance
  */
 Function.prototype.factory = function(){
-    var clazz = this;
-    function F(args){
+  var clazz = this;
+  function F(args){
         clazz.apply(this, args);
-    }
+  }
     F.prototype = clazz.prototype;
     return function(){
         return new F(arguments);
@@ -105,5 +105,89 @@ Object.defineProperty(global, 'mix', {
 });
 
 mix.require = function() {
-	
+    var path;
+    var args = Array.prototype.slice.call(arguments, 0);
+    var last = args[args.length - 1];
+
+    if(last.id) {
+        // require() lookup paths
+        module.paths = mix.util.extend(module.paths, last.paths);
+        args.pop();
+    } 
+
+    // unshift local node_modules path
+    module.paths.unshift(process.cwd() + '/node_modules');
+
+    // @mi prefix paths
+    module.paths.map(function(item, index){
+        module.paths.push(item + '/@mi');
+    });
+
+    var name = args.join('-');
+    if(mix.require._cache.hasOwnProperty(name)) {
+        return mix.require._cache[name];
+    }
+    var names = [];
+    for(var i = 0, len = mix.require.prefixes.length; i < len; i++){
+        try {
+            var pluginName = mix.require.prefixes[i] + '-' + name;
+            names.push(pluginName);
+            path = require.resolve(pluginName);
+            try {
+                return mix.require._cache[name] = require(pluginName);
+            } catch (e){
+                mix.log.notice('load plugin [' + pluginName + '] error : ' + e.message);
+                return false;
+            }
+        } catch (e){
+            if (e.code !== 'MODULE_NOT_FOUND') {
+                throw e;
+            }
+        }
+        
+    }
+    mix.log.notice('unable to load plugin [' + names.join('] or [') + ']');
+    return false;
 };
+mix.require._cache = {};
+mix.require.prefixes = ['mix'];
+
+mix.log = require('./lib/log.js');
+mix.config = require('./lib/config.js');
+mix.util = require('./lib/util.js');
+
+// Gets info from package.json
+mix.info = mix.util.readJSON(__dirname + '/package.json');
+mix.version = mix.info.version;
+mix.description = mix.info.description;
+
+mix.commands = ['server'];
+
+// mix-cli run
+mix.run = function() {
+    var program = require('commander');
+    program
+        .version(mix.version)
+        .description(mix.description)
+        .usage('[command] [option]')
+        .on('--help', function() {
+            // todo
+            console.log('');
+            console.log('For more information, see https://github.com/yangjunlong/mix');
+        });
+
+    mix.commands.forEach(function(name) {
+        var cmd = mix.require('command', name);
+        program
+            .command(cmd.name)
+            .alias(cmd.alias)
+            .usage(cmd.usage)
+            .description(cmd.desc)
+    });
+
+    program.parse(process.argv);
+
+    if (!program.args.length) {
+        program.help();
+    }
+}
