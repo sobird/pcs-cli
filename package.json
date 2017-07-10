@@ -1,7 +1,7 @@
 {
     "name": "mix-cli",
     "description": "Mix is a tool for front end develop(the pipe build system)",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "main": "mix.js",
     "bin": {
         "mix": "bin/mix"
@@ -36,5 +36,5 @@
         }
     ],
     "readmeFilename": "README.md",
-    "homepage": "https://github.com/yangjunlong/mix#readme"
+    "homepage": "https://github.com/yangjunlong/mix"
 }

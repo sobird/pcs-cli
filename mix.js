@@ -166,7 +166,14 @@ mix.commands = ['server'];
 
 // mix-cli run
 mix.run = function() {
+    /**
+     * npm commander package
+     *
+     * @see https://www.npmjs.com/package/commander
+     * @type <commander>
+     */
     var program = require('commander');
+
     program
         .version(mix.version)
         .description(mix.description)
@@ -174,17 +181,17 @@ mix.run = function() {
         .on('--help', function() {
             // todo
             console.log('');
-            console.log('For more information, see https://github.com/yangjunlong/mix');
+            console.log('For more information, see ' + mix.info.homepage);
         });
 
     mix.commands.forEach(function(name) {
-        var cmd = mix.require('command', name);
+        var cli = mix.require('command', name);
 
-        cmd.option(program
-            .command(cmd.name)
-            .alias(cmd.alias)
-            .usage(cmd.usage)
-            .description(cmd.desc)
+        cli.option(program
+            .command(cli.name)
+            .alias(cli.alias)
+            .usage(cli.usage)
+            .description(cli.desc)
         )
         .action(function(){
             this.on('--help', function() {
@@ -192,10 +199,10 @@ mix.run = function() {
                 console.log('');
             });
                 
-            cmd.command(this);
+            cli.command(this);
             //cmd.option(this);
 
-            cmd.action.apply(this, arguments);
+            cli.action.apply(this, arguments);
                 
             //this.help();
         });
