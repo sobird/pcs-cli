@@ -84,15 +84,17 @@ Function.prototype.derive = function(constructor, proto){
  * @return <Object> instance
  */
 Function.prototype.factory = function(){
-  var clazz = this;
-  function F(args){
+    var clazz = this;
+    function F(args){
         clazz.apply(this, args);
-  }
+    }
     F.prototype = clazz.prototype;
     return function(){
         return new F(arguments);
     };
 };
+
+var colors = require('colors');
 
 // mix
 var mix = module.exports = {};
@@ -146,7 +148,7 @@ mix.require = function() {
         }
         
     }
-    mix.log.notice('unable to load plugin [' + names.join('] or [') + ']');
+    //mix.log.notice('unable to load plugin [' + names.join('] or [') + ']');
     return false;
 };
 mix.require._cache = {};
@@ -155,6 +157,7 @@ mix.require.prefixes = ['mix'];
 mix.log = require('./lib/log.js');
 mix.config = require('./lib/config.js');
 mix.util = require('./lib/util.js');
+mix.project = require('./lib/project.js');
 mix.server = require('./lib/server.js');
 
 // Gets info from package.json
