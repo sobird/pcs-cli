@@ -190,15 +190,19 @@ mix.run = function() {
     mix.commands.forEach(function(name) {
         var cli = mix.require('command', name);
 
-        cli.option(program
+        cli.option(cli.command(
+            program
             .command(cli.name)
             .alias(cli.alias)
             .usage(cli.usage)
             .description(cli.desc)
-        )
+        ))
+        .on('--help', function() {
+            console.log('');
+        })
         .action(function(){
+            // sub command
             this.on('--help', function() {
-                // todo
                 console.log('');
             });
                 
