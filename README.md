@@ -1,7 +1,11 @@
 # mix
-Mix is a tool for front end develop(the pipe build system)
+Mix is a tool for todo something
 
 ## install
-```shell
-npm install -g mix-cli
+
+```sh
+npm i -g mix-cli
 ```
+
+
+### eslint
