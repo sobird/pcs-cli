@@ -61,7 +61,7 @@ export default (env) => {
       input: mainInput,
       output: {
         dir: `${DIST}`,
-        format: 'cjs',
+        format: 'es',
       },
       plugins: [
         clear({

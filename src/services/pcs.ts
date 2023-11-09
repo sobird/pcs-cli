@@ -6,9 +6,18 @@
 import fs from 'fs';
 import axios from "@/utils/axios";
 
-const BaiduPCSService = {
+interface OauthDeviceResponse {
+  device_code: string;
+  user_code: string;
+  verification_url: string;
+  qrcode_url: string;
+  expires_in: number;
+  interval: number;
+}
+
+const PcsService = {
   oauthDevice(appKey: string) {
-    return axios.get('https://openapi.baidu.com/oauth/2.0/device/code', {
+    return axios.get<unknown, OauthDeviceResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
       params: {
         client_id: appKey,
         response_type: "device_code",
@@ -98,4 +107,4 @@ const BaiduPCSService = {
   }
 };
 
-export default BaiduPCSService;
+export default PcsService;

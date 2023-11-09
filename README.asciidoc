@@ -1,12 +1,6 @@
 # mix
 Mix is a tool for todo something
 
-## install
+## pcs
 
-```sh
-npm i -g mix-cli
-```
-
-
-### eslint
 

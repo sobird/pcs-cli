@@ -7,7 +7,7 @@
 import { Command, Option } from 'commander';
 import prompts from 'prompts';
 import { description, version } from '../package.json';
-import BaiduPCSService from './services/bdpcs';
+import BaiduPCSService from './services/pcs';
 
 const program = new Command();
 
