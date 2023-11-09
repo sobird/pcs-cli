@@ -6,7 +6,7 @@
     "mix": "bin/mix.js"
   },
   "scripts": {
-    "dev": "rollup -c -w --environment NODE_ENV:development",
+    "dev": "rollup -cw --watch.onEnd='node ./afterBuildScript.js' --environment NODE_ENV:development",
     "start": "tsc -w",
     "build:rollup": "rollup -c --environment NODE_ENV:production",
     "build:esm": "tsc -m es6 --outDir dist/esm",
