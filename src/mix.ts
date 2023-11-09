@@ -28,34 +28,7 @@ program.command('init')
   .option('-k, --AppKey <appKey>', 'app key')
   .option('-s, --AppSecret <appSecret>', 'App Secret')
   .action((options) => {
-    // const limit = options.first ? 1 : undefined;
-    // console.log(str.split(options.separator, limit));
-    // console.log(options);
-
-    const questions = [
-      {
-        type: 'text',
-        name: 'username',
-        message: 'What is your GitHub username?'
-      },
-      {
-        type: 'number',
-        name: 'age',
-        message: 'How old are you?'
-      },
-      {
-        type: 'text',
-        name: 'about',
-        message: 'Tell something about yourself',
-        initial: 'Why should I?'
-      }
-    ];
-
-    (async () => {
-      const response = await prompts(questions);
-    
-      console.log(response); // => { value: 24 }
-    })();
+    // 
   });
 
 program.command('split')
