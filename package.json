@@ -1,55 +1,57 @@
 {
-    "name": "mix-cli",
-    "description": "Mix is a tool for todo something",
-    "version": "0.1.2",
-    "main": "mix.js",
-    "bin": {
-        "mix": "dist/bin/mix.js"
-    },
-    "scripts": {
-        "start": "tsc -w --resolveJsonModule",
-        "build:esm": "tsc -m es6 --outDir dist/esm",
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/yangjunlong/mix.git"
-    },
-    "dependencies": {
-        "colors": "^1.4.0",
-        "commander": "^11.1.0"
-    },
-    "keywords": [
-        "mix"
-    ],
-    "bugs": {
-        "url": "https://github.com/yangjunlong/mix/issues"
-    },
-    "author": {
-        "name": "sobird"
-    },
-    "license": "MIT",
-    "licenses": [
-        {
-            "type": "MIT",
-            "url": "https://github.com/yangjunlong/mix/blob/master/LICENSE"
-        }
-    ],
-    "readmeFilename": "README.md",
-    "homepage": "https://github.com/yangjunlong/mix",
-    "devDependencies": {
-        "@types/node": "^20.9.0",
-        "@typescript-eslint/eslint-plugin": "^6.4.0",
-        "@typescript-eslint/parser": "^6.10.0",
-        "eslint": "^8.0.1",
-        "eslint-config-standard-with-typescript": "^39.1.1",
-        "eslint-plugin-import": "^2.25.2",
-        "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
-        "eslint-plugin-promise": "^6.0.0",
-        "tslib": "^2.6.2",
-        "typescript": "^5.2.2"
-    },
-    "files": [
-        "dist/**/*"
-    ]
+  "name": "mix-cli",
+  "description": "Mix is a tool for todo something",
+  "version": "0.1.2",
+  "bin": {
+    "mix": "dist/bin/mix.js"
+  },
+  "scripts": {
+    "start": "tsc -w",
+    "build:esm": "tsc -m es6 --outDir dist/esm",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangjunlong/mix.git"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^11.1.0"
+  },
+  "keywords": [
+    "mix"
+  ],
+  "bugs": {
+    "url": "https://github.com/yangjunlong/mix/issues"
+  },
+  "author": {
+    "name": "sobird"
+  },
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/yangjunlong/mix/blob/master/LICENSE"
+    }
+  ],
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/yangjunlong/mix",
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "eslint": "^8.0.1",
+    "eslint-config-standard-with-typescript": "^39.1.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "^6.0.0",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist/**/*"
+  ]
 }
