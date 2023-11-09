@@ -1,10 +1,14 @@
-import { readFileSync } from 'fs'
-import { Command } from 'commander'
+import { readFileSync } from "fs";
+import { Command } from 'commander';
+const pkginfo = JSON.parse(readFileSync(__dirname + "/../package.json", "utf8"));
 
-console.log('Command', Command)
-console.log('readFileSync', readFileSync)
+const program = new Command();
 
+program
+  .name('string-util')
+  .description('CLI to some JavaScript string utilities')
+  .version('0.8.0');
 
-const fn = () => {
-  return 123
-}
+program.parse();
+
+export default  'mix';
