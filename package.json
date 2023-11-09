@@ -1,7 +1,7 @@
 {
   "name": "mix-cli",
   "description": "Mix is a tool for todo something",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "bin": {
     "mix": "bin/mix.js"
   },
