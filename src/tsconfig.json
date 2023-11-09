@@ -1,0 +1,11 @@
+// https://stackoverflow.com/questions/55753163/package-json-is-not-under-rootdir/61467483#61467483
+{
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "../dist/",
+    "resolveJsonModule": true
+  },
+  "references": [      // this is how we declare a dependency from
+    { "path": "../" }  // this project to the one at the root dir`
+  ]
+}

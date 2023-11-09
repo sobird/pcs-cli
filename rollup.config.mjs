@@ -73,6 +73,7 @@ export default (env) => {
         }),
         nodeResolve(),
         typescript({
+          tsconfig: "./src/tsconfig.json",
           noEmitOnError: false,
         }),
         json(),
