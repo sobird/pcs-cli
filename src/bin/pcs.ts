@@ -6,6 +6,7 @@ import { Command, Option } from 'commander';
 import prompts, { PromptObject } from 'prompts';
 import osenv from 'osenv';
 import open from 'open';
+import chalk from 'chalk';
 import { name, version } from '../../package.json';
 import PcsService from '@/services/pcs';
 
@@ -69,11 +70,11 @@ program.command('init')
 
     try {
       const {verification_url, user_code} = await PcsService.oauthDevice(pcsInfo.key);
-      await open(verification_url);
+      await open(`${verification_url}?code=${user_code}`);
       const { value } = await prompts({
         type: "confirm",
         name: 'value',
-        message: `Launch your favorite web browser and visit ${verification_url}.\nInput ${user_code} as the user code if asked.\nAfter granting access to the application, come back here and press Enter to continue.`,
+        message: `Launch your favorite web browser and visit ${verification_url}.\nInput ${chalk.bold.red(user_code)} as the user code if asked.\nAfter granting access to the application, come back here and press Enter to continue.`,
         initial: false
       });
 
