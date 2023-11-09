@@ -17,6 +17,7 @@ jobs:
           node-version: 18
       - run: yarn
       - run: yarn test
+      - run: yarn build:rollup
 
   publish-npm:
     needs: build

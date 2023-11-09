@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "rollup -c -w --environment NODE_ENV:development",
     "start": "tsc -w",
+    "build:rollup": "rollup -c --environment NODE_ENV:production",
     "build:esm": "tsc -m es6 --outDir dist/esm",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:eslint": "eslint \"src/**/*.{ts,js}\" --fix",
