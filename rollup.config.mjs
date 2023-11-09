@@ -10,8 +10,8 @@ import { dirname, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import external from 'rollup-plugin-peer-deps-external';
-// import typescript from 'rollup-plugin-typescript2';
-import typescript from '@rollup/plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
+// import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
 import { babel } from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
@@ -72,9 +72,12 @@ export default (env) => {
           includeDependencies: true,
         }),
         nodeResolve(),
+        commonjs(),
         typescript({
-          tsconfig: "./src/tsconfig.json",
-          noEmitOnError: false,
+          check: false,
+          // declaration: true,
+          // tsconfig: "./src/tsconfig.json",
+          // noEmitOnError: false,
         }),
         json(),
         copy({
