@@ -3,9 +3,10 @@
   "description": "Mix is a tool for todo something",
   "version": "0.1.2",
   "bin": {
-    "mix": "dist/bin/mix.js"
+    "mix": "bin/mix.js"
   },
   "scripts": {
+    "dev": "rollup -c -w --environment NODE_ENV:development",
     "start": "tsc -w",
     "build:esm": "tsc -m es6 --outDir dist/esm",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -37,6 +38,13 @@
   "readmeFilename": "README.md",
   "homepage": "https://github.com/yangjunlong/mix",
   "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.5",
     "@types/node": "^20.9.0",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.10.0",
@@ -45,6 +53,12 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
     "eslint-plugin-promise": "^6.0.0",
+    "glob": "^10.3.10",
+    "rollup": "^4.3.0",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-typescript2": "^0.36.0",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2"
   },

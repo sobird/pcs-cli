@@ -4,9 +4,9 @@
  * sobird<i@sobird.me> at 2023/11/09 11:39:37 created.
  */
 
-import { readFileSync } from "fs";
 import { Command } from 'commander';
-const {name, description, version} = JSON.parse(readFileSync(__dirname + "/../package.json", "utf8"));
+import {name, description, version}  from '../package.json';
+
 const program = new Command();
 
 program
@@ -16,4 +16,4 @@ program
 
 program.parse();
 
-export default  'mix';
+export default 'mix';
