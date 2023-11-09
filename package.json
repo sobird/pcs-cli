@@ -4,10 +4,11 @@
     "version": "0.1.1",
     "main": "mix.js",
     "bin": {
-        "mix": "bin/mix"
+        "mix": "dist/bin/mix.js"
     },
     "scripts": {
-        "start": "tsc -w",
+        "start": "tsc -w --resolveJsonModule",
+        "build:esm": "tsc -m es6 --outDir dist/esm",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -47,5 +48,6 @@
         "eslint-plugin-promise": "^6.0.0",
         "tslib": "^2.6.2",
         "typescript": "^5.2.2"
-    }
+    },
+    "files": ["dist/**/*"]
 }
