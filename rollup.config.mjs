@@ -80,10 +80,12 @@ export default (env) => {
           // noEmitOnError: false,
         }),
         json(),
+        isProduction && terser(),
         copy({
           targets: [
             { src: 'package.json', dest: DIST },
             { src: 'README.asciidoc', dest: DIST },
+            { src: 'LICENSE', dest: DIST },
           ],
           copyOnce: env.watch
         })

@@ -14,7 +14,7 @@ export interface InternalHttpRequestConfig<T = unknown> extends InternalAxiosReq
   responseParser?: ResponseParser;
 }
 
-interface HttpResponse<T = any, D = any> extends AxiosResponse<T, D> {
+interface HttpResponse<T = unknown, D = unknown> extends AxiosResponse<T, D> {
   config: InternalHttpRequestConfig<D>;
 }
 
@@ -41,7 +41,6 @@ axios.interceptors.request.use(
     return config;
   },
   (error: AxiosError) => {
-    const { config } = error;
     return Promise.reject(error);
   }
 );
@@ -53,7 +52,7 @@ axios.interceptors.response.use(
     return config.responseParser ? config.responseParser(response) : data;
   },
   (error: AxiosError) => {
-    const { request, response, config } = error;
+    const { request, response } = error;
 
     if (response) {
       // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围

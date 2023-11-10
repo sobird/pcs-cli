@@ -1,6 +1,16 @@
-# mix
-Mix is a tool for todo something
+# pcs CLI
 
-## pcs
+The CLI of Baidu Personal Cloud Storage
+
+
+image:https://img.shields.io/npm/v/pcs-cli.svg["npm", link="https://www.npmjs.com/package/pcs-cli"]
+image:https://github.com/yangjunlong/pcs-cli/workflows/pcs-cli/badge.svg?branch=master["Build Status", link="https://github.com/yangjunlong/pcs-cli/actions"]
+image:https://packagephobia.com/badge?p=pcs-cli["Install Size", link="https://packagephobia.com/result?p=pcs-cli"]
+
+## Install
+
+```sh
+npm i -g pcs-cli
+```
 
 

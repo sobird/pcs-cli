@@ -119,10 +119,10 @@ const PcsService = {
         path
       },
       responseType: 'stream',
-      responseParser: (response: any) => response,
+      responseParser: (response) => response,
     } as InternalHttpRequestConfig);
 
-    const totalLength = headers['content-length']
+    const totalLength = headers['content-length'];
 
     const progressBar = new Progress(' downloading [:bar] :rate/bps :percent :etas', {
       complete: '=',
@@ -132,19 +132,19 @@ const PcsService = {
       total: parseInt(totalLength)
     });
 
-    data.on('data', (chunk: any) => progressBar.tick(chunk.length));
+    data.on('data', (chunk) => progressBar.tick(chunk.length));
     data.pipe(writer);
 
     return new Promise((resolve, reject) => {
-      writer.on('finish', resolve)
-      writer.on('error', reject)
+      writer.on('finish', resolve);
+      writer.on('error', reject);
     });
   },
 
   /** 上传文件 */
   async upload(access_token: string, localPath: string, path: string, ondup = "overwrite") {
     const formData = new FormData();
-    const rs = fs.createReadStream(localPath)
+    const rs = fs.createReadStream(localPath);
     formData.append('file', rs);
     const formHeaders = formData.getHeaders();
 
@@ -161,9 +161,9 @@ const PcsService = {
       },
       timeout: 0,
       responseType: 'stream',
-      responseParser: (response: any) => response,
+      responseParser: (response) => response,
     } as InternalHttpRequestConfig).then(() => {
-      spinner.succeed(`${chalk.green(basename(localPath))} was successful uploaded!`)
+      spinner.succeed(`${chalk.green(basename(localPath))} was successful uploaded!`);
     });
   },
   /** 删除文件 */

@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import fs from 'fs';
-import { resolve, dirname, join, relative } from 'path';
-import { Command, Option } from 'commander';
+import { resolve, dirname, join } from 'path';
+import { Command } from 'commander';
 import prompts, { PromptObject } from 'prompts';
 import osenv from 'osenv';
 import open from 'open';
@@ -18,10 +18,9 @@ import PcsService from '@/services/pcs';
 const program = new Command();
 
 const tmp = resolve(osenv.home(), '.' + name);
-const pcs = resolve(tmp, 'pcs');
-const pcsappFile = resolve(pcs, 'pcsapp');
-const deviceFile = resolve(pcs, 'device');
-const tokenFile = resolve(pcs, 'token');
+const pcsappFile = resolve(tmp, 'pcsapp');
+const deviceFile = resolve(tmp, 'device');
+const tokenFile = resolve(tmp, 'token');
 const defaultExpiresIn = 2592000; // 单位s
 const createAppUrl = 'https://pan.baidu.com/union/console/createapp';
 const appListUrl = 'https://pan.baidu.com/union/console/applist';
@@ -138,7 +137,7 @@ program.command('quota')
 
     try {
       const { quota, used } = await PcsService.quotaInfo(tokenJson.access_token);
-      const bar = new Progress(' [:bar] :aaa/:bbb :percent', {
+      const bar = new Progress(':bar :aaa/:bbb :percent', {
         complete: '█',
         incomplete: '░',
         width: 30,
@@ -223,16 +222,16 @@ program.command('download [source] [destination]')
     }
   });
 
-  program.command('upload [local] [remote]')
+program.command('upload [local] [remote]')
   .description('upload file.')
-  .action(async (local, remote,) => {
+  .action(async (local,remote) => {
     const tokenJson = readUnexpiredJsonSync(tokenFile);
     if (!tokenJson || !tokenJson.access_token) {
       log('Your access token does not exist or has expired', chalk.red);
       return;
     }
 
-    const remoteFilename = toRemotePath(local);
+    const remoteFilename = toRemotePath(join(remote, local));
 
     try {
       await PcsService.upload(tokenJson.access_token, local, remoteFilename);
