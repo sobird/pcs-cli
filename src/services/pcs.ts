@@ -4,10 +4,12 @@
  * sobird<i@sobird.me> at 2023/11/09 19:42:40 created.
  */
 import fs from 'fs';
-import {dirname} from 'path';
-import {AxiosProgressEvent} from 'axios';
+import { dirname, basename } from 'path';
 import Progress from 'progress';
-import axios, {InternalHttpRequestConfig} from "@/utils/axios";
+import ora from 'ora';
+import FormData from 'form-data';
+import chalk from 'chalk';
+import axios, { InternalHttpRequestConfig } from "@/utils/axios";
 
 interface OauthDeviceResponse {
   device_code: string;
@@ -107,7 +109,7 @@ const PcsService = {
     });
   },
 
-  async download(access_token: string, path: string, local: string, onProgressPercent?: (percent: number, progressEvent?: AxiosProgressEvent) => void) {
+  async download(access_token: string, path: string, local: string) {
     fs.mkdirSync(dirname(local), { recursive: true });
     const writer = fs.createWriteStream(local);
     const { data, headers } = await axios.get('/pcs/file', {
@@ -118,9 +120,6 @@ const PcsService = {
       },
       responseType: 'stream',
       responseParser: (response: any) => response,
-      onUploadProgress(progressEvent) {
-        onProgressPercent?.(Math.floor((progressEvent.loaded / progressEvent.total) * 100), progressEvent);
-      },
     } as InternalHttpRequestConfig);
 
     const totalLength = headers['content-length']
@@ -143,21 +142,28 @@ const PcsService = {
   },
 
   /** 上传文件 */
-  upload(access_token: string, localPath: string, path: string, ondup="newcopy") {
+  async upload(access_token: string, localPath: string, path: string, ondup = "overwrite") {
     const formData = new FormData();
+    const rs = fs.createReadStream(localPath)
+    formData.append('file', rs);
+    const formHeaders = formData.getHeaders();
 
-    formData.append('file', fs.createReadStream(localPath));
-
+    const spinner = ora(`Uploading ${basename(localPath)}`).start();
     return axios.post('https://c.pcs.baidu.com/rest/2.0/pcs/file', formData, {
       headers: {
-        'content-type': 'multipart/form-data',
+        ...formHeaders
       },
       params: {
         method: "upload",
         access_token,
         path,
         ondup,
-      }
+      },
+      timeout: 0,
+      responseType: 'stream',
+      responseParser: (response: any) => response,
+    } as InternalHttpRequestConfig).then(() => {
+      spinner.succeed(`${chalk.green(basename(localPath))} was successful uploaded!`)
     });
   },
   /** 删除文件 */

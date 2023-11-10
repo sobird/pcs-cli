@@ -201,6 +201,27 @@ program.command('download [source] [destination]')
     }
   });
 
+  program.command('upload [local] [remote]')
+  .description('upload file.')
+  .action(async (local, remote,) => {
+    const tokenJson = readUnexpiredJsonSync(tokenFile);
+    if (!tokenJson || !tokenJson.access_token) {
+      log('Your access token does not exist or has expired', chalk.red);
+      return;
+    }
+
+    const remoteFilename = toRemotePath(local);
+
+    try {
+      await PcsService.upload(tokenJson.access_token, local, remoteFilename);
+      // todo 
+    } catch (err: any) {
+      const { response: { data } } = err;
+      console.log(`error code ${data.error_code} : ${data.error_msg}`);
+      return;
+    }
+  });
+
 program.parse();
 
 /** 获取 access token by conf file */

@@ -28,7 +28,9 @@
     "colors": "^1.4.0",
     "commander": "^11.1.0",
     "dayjs": "^1.11.10",
+    "form-data": "^4.0.0",
     "open": "^9.1.0",
+    "ora": "^7.0.1",
     "osenv": "^0.1.5",
     "progress": "^2.0.3",
     "prompts": "^2.4.2"
