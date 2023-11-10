@@ -9,6 +9,9 @@ import osenv from 'osenv';
 import open from 'open';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
+import cliProgress from 'cli-progress';
+import bytes from 'bytes';
+
 import { name, version } from '../../package.json';
 import PcsService from '@/services/pcs';
 
@@ -111,8 +114,16 @@ program.command('quota')
     }
 
     try {
-      const quotaResponse = await PcsService.quotaInfo(tokenJson.access_token);
-      console.log('quotaResponse', quotaResponse);
+      const {quota, used} = await PcsService.quotaInfo(tokenJson.access_token);
+
+      const bar = new cliProgress.SingleBar({
+        format: ' {bar} | {percentage}% | {value}/{total}',
+      }, cliProgress.Presets.shades_classic);
+      
+      bar.start(quota, 0);
+      bar.update(used);
+      bar.stop();
+
     } catch(err: any) {
       const { response: { data } } = err;
       console.log(`OAuth error ${data.error} : ${data.error_description}`);

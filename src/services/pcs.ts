@@ -24,6 +24,12 @@ interface OauthTokenResponse {
   scope: string;
 }
 
+interface QuotaResponse {
+  quota: number;
+  request_id: number;
+  used: number;
+}
+
 const PcsService = {
   oauthDevice(appKey: string) {
     return axios.get<unknown, OauthDeviceResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
@@ -59,7 +65,7 @@ const PcsService = {
 
   /** 查询容量信息 */
   quotaInfo(access_token: string) {
-    return axios.get('/pcs/quota', {
+    return axios.get<unknown, QuotaResponse>('/pcs/quota', {
       params: {
         method: "info",
         access_token,
