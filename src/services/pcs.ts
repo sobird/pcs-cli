@@ -72,6 +72,17 @@ const PcsService = {
       }
     });
   },
+
+  getMeta(access_token: string, path: string) {
+    return axios.get<unknown>('/pcs/file', {
+      params: {
+        method: "meta",
+        access_token,
+        path
+      }
+    });
+  },
+
   /** 上传文件 */
   upload(access_token: string, localPath: string, path: string, ondup="newcopy") {
     const formData = new FormData();

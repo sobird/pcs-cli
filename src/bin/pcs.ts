@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import fs from 'fs';
-import { resolve, dirname } from 'path';
+import { resolve, dirname, join } from 'path';
 import { Command, Option } from 'commander';
 import prompts, { PromptObject } from 'prompts';
 import osenv from 'osenv';
@@ -116,15 +116,6 @@ program.command('quota')
 
     try {
       const { quota, used } = await PcsService.quotaInfo(tokenJson.access_token);
-
-      // const bar = new cliProgress.SingleBar({
-      //   format: ' {bar} | {percentage}% | {value}/{total}',
-      // }, cliProgress.Presets.shades_classic);
-
-      // bar.start(quota, 0);
-      // bar.update(used);
-      // bar.stop();
-
       const bar = new Progress(' [:bar] :aaa/:bbb :percent', {
         complete: '█',
         incomplete: '░',
@@ -138,11 +129,31 @@ program.command('quota')
       console.log('');
     } catch (err: any) {
       const { response: { data } } = err;
-      console.log(`OAuth error ${data.error} : ${data.error_description}`);
+      console.log(`error code ${data.error_code} : ${data.error_msg}`);
       return;
     }
   });
 
+program.command('meta')
+  .description('Get Path Meta.')
+  .argument('<path>', 'meta path')
+  .action(async (path) => {
+    const tokenJson = readUnexpiredJsonSync(tokenFile);
+    if (!tokenJson || !tokenJson.access_token) {
+      log('Your access token does not exist or has expired', chalk.red);
+      return;
+    }
+
+    try {
+      const res = await PcsService.getMeta(tokenJson.access_token, localPath(path));
+      console.log('res', res);
+    } catch (err: any) {
+      const { response: { data } } = err;
+      console.log(`error code ${data.error_code} : ${data.error_msg}`);
+      return;
+    }
+  });
+  
 program.parse();
 
 /** 获取 access token by conf file */
@@ -264,4 +275,9 @@ function readUnexpiredJsonSync(path: string, expiresField = 'expires_in') {
 
 function log(message: string, color = chalk.blackBright) {
   console.log(color(message));
+}
+
+function localPath(path: string) {
+  const pcsappInfo = readUnexpiredJsonSync(pcsappFile);
+  return join('/apps', pcsappInfo.name, path);
 }
