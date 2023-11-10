@@ -9,7 +9,6 @@ import osenv from 'osenv';
 import open from 'open';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
-import cliProgress from 'cli-progress';
 import Progress from 'progress';
 import bytes from 'bytes';
 
@@ -104,6 +103,29 @@ program.command('init')
 
   });
 
+program.command('refresh')
+  .description('refresh token.')
+  .action(async () => {
+    const tokenJson = readUnexpiredJsonSync(tokenFile);
+    if (!tokenJson || !tokenJson.access_token) {
+      log('Your access token does not exist or has expired', chalk.red);
+      return;
+    }
+
+    try {
+      const res = await PcsService.refreshToken(tokenJson.key, tokenJson.secret, tokenJson.refresh_token);
+      writeJsonSync(tokenFile, {
+        ...res,
+        key: tokenJson.key,
+        secret: tokenJson.secret
+      });
+      log('Successfully refreshed token', chalk.green);
+    } catch (err: any) {
+      const { response: { data } } = err;
+      console.log(`OAuth error ${data.error} : ${data.error_description}`);
+      return;
+    }
+  });
 
 program.command('quota')
   .description('Check Your Cloud Storage Status.')
@@ -267,6 +289,8 @@ async function getAccessToken() {
       writeJsonSync(tokenFile, {
         access_token,
         expires_in,
+        key,
+        secret
       });
     }
   }
@@ -291,7 +315,11 @@ async function getAccessTokenByDevice(deviceInfo: any) {
 
   if (confirm) {
     const oauthTokenResponse = await PcsService.oauthToken(key, secret, device_code);
-    writeJsonSync(tokenFile, oauthTokenResponse);
+    writeJsonSync(tokenFile, {
+      ...oauthTokenResponse,
+      key,
+      secret
+    });
     log('Successfully initialized', chalk.green);
     log(`access_token: ${chalk.yellowBright(oauthTokenResponse.access_token)}`);
     log(`refresh_token: ${chalk.yellowBright(oauthTokenResponse.refresh_token)}`);
