@@ -24,7 +24,7 @@ const createAppUrl = 'https://pan.baidu.com/union/console/createapp';
 const appListUrl = 'https://pan.baidu.com/union/console/applist';
 
 program
-  .name('pcs')
+  .name(name)
   .description(`Baidu Personal Cloud Storage Scaffold.\n\nYou can get app key by visit ${chalk.blue.underline(createAppUrl)}.\nIf you have already created an app, you can visit ${chalk.blue.underline(appListUrl)} and get it in your app's info.`)
   .version(version);
 

@@ -1,9 +1,0 @@
-#!/usr/bin/env node
-/**
- * mix cli entry
- * 
- * @author  Yang,junlong at 2016-07-25 09:18:19 build.
- * @version $Id$
- */
-
-require('../mix.js').run();
