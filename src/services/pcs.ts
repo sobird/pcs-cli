@@ -15,6 +15,15 @@ interface OauthDeviceResponse {
   interval: number;
 }
 
+interface OauthTokenResponse {
+  expires_in: number;
+  refresh_token: string;
+  access_token: string;
+  session_secret: string,
+  session_key: string,
+  scope: string;
+}
+
 const PcsService = {
   oauthDevice(appKey: string) {
     return axios.get<unknown, OauthDeviceResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
@@ -26,7 +35,7 @@ const PcsService = {
     });
   },
   oauthToken(appKey: string, appSec: string, device_code: string) {
-    return axios.get('https://openapi.baidu.com/oauth/2.0/token', {
+    return axios.get<unknown, OauthTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {
       params: {
         client_id: appKey,
         client_secret: appSec,
