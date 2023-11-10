@@ -153,6 +153,30 @@ program.command('meta')
       return;
     }
   });
+
+program.command('list')
+  .description('list directory contents.')
+  .argument('<path>', 'meta path')
+  .alias('ls')
+  .action(async (path) => {
+    const tokenJson = readUnexpiredJsonSync(tokenFile);
+    if (!tokenJson || !tokenJson.access_token) {
+      log('Your access token does not exist or has expired', chalk.red);
+      return;
+    }
+
+    try {
+      const {list} = await PcsService.listFile(tokenJson.access_token, localPath(path));
+      list.map(item => {
+        console.log(dayjs.unix(item.server_mtime).format('YYYY-MM-DD HH:mm:ss'), item.server_filename);
+        return item;
+      });
+    } catch (err: any) {
+      const { response: { data } } = err;
+      console.log(`error code ${data.error_code} : ${data.error_msg}`);
+      return;
+    }
+  });
   
 program.parse();
 

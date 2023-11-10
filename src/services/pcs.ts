@@ -30,6 +30,17 @@ interface QuotaResponse {
   used: number;
 }
 
+interface PcsFile {
+  server_filename: string;
+  server_ctime: number;
+  server_mtime: number;
+}
+
+interface ListFileResponse {
+  list: PcsFile[],
+  request_id: number;
+}
+
 const PcsService = {
   oauthDevice(appKey: string) {
     return axios.get<unknown, OauthDeviceResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
@@ -77,6 +88,16 @@ const PcsService = {
     return axios.get<unknown>('/pcs/file', {
       params: {
         method: "meta",
+        access_token,
+        path
+      }
+    });
+  },
+
+  listFile(access_token: string, path: string) {
+    return axios.get<unknown, ListFileResponse>('/pcs/file', {
+      params: {
+        method: "list",
         access_token,
         path
       }
