@@ -8,6 +8,16 @@
 
 import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
+export type ResponseParser<T = unknown> = (response: AxiosResponse) => T;
+
+export interface InternalHttpRequestConfig<T = unknown> extends InternalAxiosRequestConfig<T> {
+  responseParser?: ResponseParser;
+}
+
+interface HttpResponse<T = any, D = any> extends AxiosResponse<T, D> {
+  config: InternalHttpRequestConfig<D>;
+}
+
 /**
  * 全局的 axios 默认值，所有新建的Axios实例将继承此处的设置
  *
@@ -27,7 +37,7 @@ axios.defaults.baseURL = "https://pcs.baidu.com/rest/2.0";
 
 // 请求拦截器
 axios.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  (config: InternalHttpRequestConfig) => {
     return config;
   },
   (error: AxiosError) => {
@@ -38,9 +48,9 @@ axios.interceptors.request.use(
 
 // 响应拦截器
 axios.interceptors.response.use(
-  (response: AxiosResponse) => {
+  (response: HttpResponse) => {
     const { config, data } = response;
-    return data;
+    return config.responseParser ? config.responseParser(response) : data;
   },
   (error: AxiosError) => {
     const { request, response, config } = error;

@@ -4,7 +4,10 @@
  * sobird<i@sobird.me> at 2023/11/09 19:42:40 created.
  */
 import fs from 'fs';
-import axios from "@/utils/axios";
+import {dirname} from 'path';
+import {AxiosProgressEvent} from 'axios';
+import Progress from 'progress';
+import axios, {InternalHttpRequestConfig} from "@/utils/axios";
 
 interface OauthDeviceResponse {
   device_code: string;
@@ -104,6 +107,41 @@ const PcsService = {
     });
   },
 
+  async download(access_token: string, path: string, local: string, onProgressPercent?: (percent: number, progressEvent?: AxiosProgressEvent) => void) {
+    fs.mkdirSync(dirname(local), { recursive: true });
+    const writer = fs.createWriteStream(local);
+    const { data, headers } = await axios.get('/pcs/file', {
+      params: {
+        method: "download",
+        access_token,
+        path
+      },
+      responseType: 'stream',
+      responseParser: (response: any) => response,
+      onUploadProgress(progressEvent) {
+        onProgressPercent?.(Math.floor((progressEvent.loaded / progressEvent.total) * 100), progressEvent);
+      },
+    } as InternalHttpRequestConfig);
+
+    const totalLength = headers['content-length']
+
+    const progressBar = new Progress(' downloading [:bar] :rate/bps :percent :etas', {
+      complete: '=',
+      incomplete: ' ',
+      width: 40,
+      // renderThrottle: 1,
+      total: parseInt(totalLength)
+    });
+
+    data.on('data', (chunk: any) => progressBar.tick(chunk.length));
+    data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on('finish', resolve)
+      writer.on('error', reject)
+    });
+  },
+
   /** 上传文件 */
   upload(access_token: string, localPath: string, path: string, ondup="newcopy") {
     const formData = new FormData();
@@ -149,9 +187,9 @@ const PcsService = {
     // 
   },
   /** 下载文件 */
-  download(access_token: string, path: string) {
-    return `https://d.pcs.baidu.com/rest/2.0/pcs/file?method=download&access_token=${access_token}&path=${path}`;
-  }
+  // download(access_token: string, path: string) {
+  //   return `https://d.pcs.baidu.com/rest/2.0/pcs/file?method=download&access_token=${access_token}&path=${path}`;
+  // }
 };
 
 export default PcsService;

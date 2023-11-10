@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import fs from 'fs';
-import { resolve, dirname, join } from 'path';
+import { resolve, dirname, join, relative } from 'path';
 import { Command, Option } from 'commander';
 import prompts, { PromptObject } from 'prompts';
 import osenv from 'osenv';
@@ -145,7 +145,7 @@ program.command('meta')
     }
 
     try {
-      const res = await PcsService.getMeta(tokenJson.access_token, localPath(path));
+      const res = await PcsService.getMeta(tokenJson.access_token, toRemotePath(path));
       console.log('res', res);
     } catch (err: any) {
       const { response: { data } } = err;
@@ -156,7 +156,7 @@ program.command('meta')
 
 program.command('list')
   .description('list directory contents.')
-  .argument('<path>', 'meta path')
+  .argument('<path>', 'path')
   .alias('ls')
   .action(async (path) => {
     const tokenJson = readUnexpiredJsonSync(tokenFile);
@@ -166,7 +166,7 @@ program.command('list')
     }
 
     try {
-      const {list} = await PcsService.listFile(tokenJson.access_token, localPath(path));
+      const { list } = await PcsService.listFile(tokenJson.access_token, toRemotePath(path));
       list.map(item => {
         console.log(dayjs.unix(item.server_mtime).format('YYYY-MM-DD HH:mm:ss'), item.server_filename);
         return item;
@@ -177,7 +177,30 @@ program.command('list')
       return;
     }
   });
-  
+
+program.command('download [source] [destination]')
+  .description('download file.')
+  .alias('dl')
+  .action(async (source, destination,) => {
+    const tokenJson = readUnexpiredJsonSync(tokenFile);
+    if (!tokenJson || !tokenJson.access_token) {
+      log('Your access token does not exist or has expired', chalk.red);
+      return;
+    }
+
+    const localFilename = resolve(destination, toLocalPath(source));
+    const remoteFilename = toRemotePath(source);
+
+    try {
+      await PcsService.download(tokenJson.access_token, remoteFilename, localFilename);
+      // todo 
+    } catch (err: any) {
+      const { response: { data } } = err;
+      console.log(`error code ${data.error_code} : ${data.error_msg}`);
+      return;
+    }
+  });
+
 program.parse();
 
 /** 获取 access token by conf file */
@@ -301,7 +324,18 @@ function log(message: string, color = chalk.blackBright) {
   console.log(color(message));
 }
 
-function localPath(path: string) {
+function toRemotePath(path: string) {
   const pcsappInfo = readUnexpiredJsonSync(pcsappFile);
   return join('/apps', pcsappInfo.name, path);
+}
+
+function toLocalPath(path: string) {
+  const pcsappInfo = readUnexpiredJsonSync(pcsappFile);
+  const pathPrefix = join('/apps', pcsappInfo.name);
+  if (path.indexOf(pathPrefix) === 0) {
+    return path.substring(pathPrefix.length, path.length);
+  }
+  else {
+    return path;
+  }
 }
