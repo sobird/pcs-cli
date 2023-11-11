@@ -177,7 +177,7 @@ const PcsService = {
     });
   },
   /** 离线下载 */
-  fetch(access_token: string, save_path: string, source_url: string) {
+  fetch(access_token: string, source_url: string, save_path: string,) {
     return axios.get('/pcs/services/cloud_dl', {
       params: {
         method: 'add_task',

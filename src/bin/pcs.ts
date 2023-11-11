@@ -266,6 +266,27 @@ program.command('delete [remote]')
     }
   });
 
+program.command('fetch [source] [remote]')
+  .description('fetch source to remote.')
+  .action(async (source, remote) => {
+    const tokenJson = readUnexpiredJsonSync(tokenFile);
+    if (!tokenJson || !tokenJson.access_token) {
+      log('Your access token does not exist or has expired', chalk.red);
+      return;
+    }
+
+    const remoteFilename = toRemotePath(remote);
+
+    try {
+      await PcsService.fetch(tokenJson.access_token, source, remoteFilename);
+      // todo 
+    } catch (err: any) {
+      const { response: { data } } = err;
+      console.log(`error code ${data.error_code} : ${data.error_msg}`);
+      return;
+    }
+  });
+  
 program.parse();
 
 /** 获取 access token by conf file */
