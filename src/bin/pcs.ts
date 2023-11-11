@@ -235,7 +235,7 @@ program.command('upload [local] [remote]')
     const remoteFilename = toRemotePath(join(remote, local));
 
     try {
-      await PcsService.upload(tokenJson.access_token, local, remoteFilename);
+      await PcsService.upload2(tokenJson.access_token, local, remoteFilename);
       // todo 
     } catch (err: any) {
       const { response: { data } } = err;

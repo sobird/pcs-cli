@@ -3,6 +3,7 @@
  * 
  * sobird<i@sobird.me> at 2023/11/09 19:42:40 created.
  */
+import https from 'https';
 import fs from 'fs';
 import { dirname, basename } from 'path';
 import Progress from 'progress';
@@ -164,6 +165,48 @@ const PcsService = {
       responseParser: (response) => response,
     } as InternalHttpRequestConfig).then(() => {
       spinner.succeed(`${chalk.green(basename(localPath))} was successful uploaded!`);
+    });
+  },
+  async upload2(access_token: string, localPath: string, path: string, ondup = "overwrite") {
+
+    const uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${access_token}&path=${path}&ondup=${ondup}`;
+    const fileStat = fs.statSync(localPath);
+    const boundaryKey = Math.random().toString(16);
+    const payload = `--${boundaryKey}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="file"; filename="${path}"\r\n\r\n`;
+    const enddata = '\r\n--' + boundaryKey + '--';
+    const contentLength = Buffer.byteLength(payload) + Buffer.byteLength(enddata) + fileStat.size;
+    const progressBar = new Progress(' uploading [:bar] :rate/bps :percent :etas', {
+      complete: '=',
+      incomplete: ' ',
+      width: 40,
+      total: fileStat.size
+    });
+
+    const req = https.request({
+      hostname: 'pcs.baidu.com',
+      method: 'POST',
+      path: uploadPath,
+    }, res => {
+      res.on('data', (data) => {
+        // 上传完成
+        // console.log('data', data.toString());
+      });
+      res.on('end', () => {
+        // todo
+      });
+    });
+
+    req.setHeader('Content-Type', `multipart/form-data; boundary=${boundaryKey}`);
+    req.setHeader('Content-Length', contentLength);
+    req.write(payload);
+
+    const fileStream = fs.createReadStream(localPath);
+    fileStream.pipe(req, { end: false });
+    fileStream.on('end', function () {
+      req.end(enddata);
+    });
+    fileStream.on('data', (chunk) => {
+      progressBar.tick(chunk.length);
     });
   },
   /** 删除文件 */
