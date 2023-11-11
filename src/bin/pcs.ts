@@ -39,10 +39,11 @@ program.command('init')
     // 如果token存在且没有过期, 则提示用户是否要继续初始化
     const tokenJson = readUnexpiredJsonSync(tokenFile);
     if (tokenJson && tokenJson.access_token) {
+      log(`Your access token has not expired (expiration date: ${dayjs(tokenJson.expires_time).format('YYYY-MM-DD HH:mm:ss')}).`);
       const { value } = await prompts({
         type: "confirm",
         name: 'value',
-        message: `Your access token has not expired (expiration date: ${dayjs(tokenJson.expires_time).format('YYYY-MM-DD HH:mm:ss')}). Do you want to continue initializing?`,
+        message: `Do you want to continue initializing?`,
         initial: false
       });
 
@@ -199,8 +200,8 @@ program.command('list')
     }
   });
 
-program.command('download [source] [destination]')
-  .description('download file.')
+program.command('download [remote] [local]')
+  .description('download remote file.')
   .alias('dl')
   .action(async (source, destination,) => {
     const tokenJson = readUnexpiredJsonSync(tokenFile);
@@ -223,7 +224,7 @@ program.command('download [source] [destination]')
   });
 
 program.command('upload [local] [remote]')
-  .description('upload file.')
+  .description('upload local file.')
   .action(async (local,remote) => {
     const tokenJson = readUnexpiredJsonSync(tokenFile);
     if (!tokenJson || !tokenJson.access_token) {
@@ -235,6 +236,28 @@ program.command('upload [local] [remote]')
 
     try {
       await PcsService.upload(tokenJson.access_token, local, remoteFilename);
+      // todo 
+    } catch (err: any) {
+      const { response: { data } } = err;
+      console.log(`error code ${data.error_code} : ${data.error_msg}`);
+      return;
+    }
+  });
+
+program.command('delete [remote]')
+  .alias('rm')
+  .description('delete remote file.')
+  .action(async (remote) => {
+    const tokenJson = readUnexpiredJsonSync(tokenFile);
+    if (!tokenJson || !tokenJson.access_token) {
+      log('Your access token does not exist or has expired', chalk.red);
+      return;
+    }
+
+    const remoteFilename = toRemotePath(remote);
+
+    try {
+      await PcsService.delete(tokenJson.access_token, remoteFilename,);
       // todo 
     } catch (err: any) {
       const { response: { data } } = err;
