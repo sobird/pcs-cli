@@ -183,31 +183,34 @@ const PcsService = {
       total: fileStat.size
     });
 
-    const req = https.request({
-      hostname: 'pcs.baidu.com',
-      method: 'POST',
-      path: uploadPath,
-    }, res => {
-      res.on('data', (data) => {
-        // 上传完成
-        // console.log('data', data.toString());
+    return new Promise((resolve, reject) => {
+      const req = https.request({
+        hostname: 'pcs.baidu.com',
+        method: 'POST',
+        path: uploadPath,
+      }, res => {
+        res.on('data', (data) => {
+          // 上传完成
+          // console.log('data', data.toString());
+        });
+        res.on('end', () => {
+          // todo
+          resolve(void 0);
+        });
       });
-      res.on('end', () => {
-        // todo
+  
+      req.setHeader('Content-Type', `multipart/form-data; boundary=${boundaryKey}`);
+      req.setHeader('Content-Length', contentLength);
+      req.write(payload);
+  
+      const fileStream = fs.createReadStream(localPath);
+      fileStream.pipe(req, { end: false });
+      fileStream.on('end', function () {
+        req.end(enddata);
       });
-    });
-
-    req.setHeader('Content-Type', `multipart/form-data; boundary=${boundaryKey}`);
-    req.setHeader('Content-Length', contentLength);
-    req.write(payload);
-
-    const fileStream = fs.createReadStream(localPath);
-    fileStream.pipe(req, { end: false });
-    fileStream.on('end', function () {
-      req.end(enddata);
-    });
-    fileStream.on('data', (chunk) => {
-      progressBar.tick(chunk.length);
+      fileStream.on('data', (chunk) => {
+        progressBar.tick(chunk.length);
+      });
     });
   },
   /** 删除文件 */

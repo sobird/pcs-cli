@@ -3,7 +3,7 @@
 
 import fs from 'fs';
 import { resolve, dirname, join } from 'path';
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import prompts, { PromptObject } from 'prompts';
 import osenv from 'osenv';
 import open from 'open';
@@ -11,6 +11,7 @@ import chalk from 'chalk';
 import dayjs from 'dayjs';
 import Progress from 'progress';
 import bytes from 'bytes';
+import { fileJSON } from '@/utils';
 
 import { name, version } from '../../package.json';
 import PcsService from '@/services/pcs';
@@ -26,13 +27,28 @@ const createAppUrl = 'https://pan.baidu.com/union/console/createapp';
 const appListUrl = 'https://pan.baidu.com/union/console/applist';
 
 import init from '@/command/init';
+import upload from '@/command/upload';
 
 program
   .name(name)
   .description(`Baidu Personal Cloud Storage Scaffold.\n\nYou can get app key by visit ${chalk.blue.underline(createAppUrl)}.\nIf you have already created an app, you can visit ${chalk.blue.underline(appListUrl)} and get it in your app's info.`)
   .version(version);
 
+program.hook('preAction', (thisCommand, actionCommand) => {
+  const tokenOption = actionCommand.options.find(option => option.long === '--token');
+  if(tokenOption) {
+    const tokenJson = fileJSON('TOKEN');
+    if (!tokenJson || !tokenJson.access_token) {
+      log('Your access token does not exist or has expired', chalk.red);
+      return;
+    }
+    actionCommand.setOptionValue('token', tokenOption.defaultValue || tokenJson.access_token);
+  }
+  // throw 'test';
+});
+
 init(program);
+upload(program);
 
 program.command('refresh')
   .description('refresh token.')
@@ -146,30 +162,6 @@ program.command('download [remote] [local]')
 
     try {
       await PcsService.download(tokenJson.access_token, remoteFilename, localFilename);
-      // todo 
-    } catch (err: any) {
-      const { response: { data } } = err;
-      console.log(`error code ${data.error_code} : ${data.error_msg}`);
-      return;
-    }
-  });
-
-program.command('upload [local] [remote]')
-  .description('upload local file.')
-  .option('-b --bytes <size>', 'Split upload bytes size', '1073741824')
-  .action(async (local, remote, bytes) => {
-    const tokenJson = readUnexpiredJsonSync(tokenFile);
-    if (!tokenJson || !tokenJson.access_token) {
-      log('Your access token does not exist or has expired', chalk.red);
-      return;
-    }
-
-    console.log(bytes, local, remote);
-
-    const remoteFilename = toRemotePath(join(remote, local));
-
-    try {
-      await PcsService.upload2(tokenJson.access_token, local, remoteFilename);
       // todo 
     } catch (err: any) {
       const { response: { data } } = err;
