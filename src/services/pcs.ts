@@ -179,7 +179,7 @@ const PcsService = {
     const payload = `--${boundaryKey}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="file"; filename="${path}"\r\n\r\n`;
     const enddata = '\r\n--' + boundaryKey + '--';
     const contentLength = Buffer.byteLength(payload) + Buffer.byteLength(enddata) + fileStat.size;
-    const progressBar = new Progress(' uploading [:bar] :rate/bps :percent :etas', {
+    const progressBar = new Progress('[:bar] :rate/bps :percent :etas', {
       complete: '=',
       incomplete: ' ',
       width: 40,

@@ -5,6 +5,7 @@ import fs from 'fs';
 import { resolve, dirname, join } from 'path';
 import { Command, Option } from 'commander';
 import prompts, { PromptObject } from 'prompts';
+// todo remove
 import osenv from 'osenv';
 import open from 'open';
 import chalk from 'chalk';

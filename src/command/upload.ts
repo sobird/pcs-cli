@@ -4,7 +4,7 @@ import { join, sep } from 'path';
 import { glob } from 'glob';
 import { type Command } from 'commander';
 import chalk from 'chalk';
-import { fileJSON, log, toRemotePath, splitFile } from '@/utils';
+import { log, toRemotePath, splitFile } from '@/utils';
 import PcsService from '@/services/pcs';
 
 export default (program: Command) => {
@@ -42,7 +42,7 @@ export default (program: Command) => {
             };
             await PcsService.createSuperFile(options.token, toRemotePath(join(remote, currentValue)), param);
           } else {
-            console.log('currentValue', currentValue);
+            log(`${chalk.blueBright('==>')} Uploading ${currentValue}`);
             return PcsService.upload2(options.token, currentValue, toRemotePath(join(remote, currentValue))) as Promise<void>;
           }
         }, Promise.resolve());
