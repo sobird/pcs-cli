@@ -161,6 +161,7 @@ export function splitFile(path: string, bytes: number, temp: string) {
         });
         readStream.on("end", async () => {
           const partPath = join(temp, `${basename(path)}.${partNum + 1}`);
+          mkdirSync(dirname(partPath), { recursive: true });
           writeFile(partPath, data, async (err) => {
             if (err) {
               reject(err);

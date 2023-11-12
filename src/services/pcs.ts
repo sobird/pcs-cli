@@ -168,9 +168,12 @@ const PcsService = {
       spinner.succeed(`${chalk.green(basename(localPath))} was successful uploaded!`);
     });
   },
-  async upload2(access_token: string, localPath: string, path: string, ondup = "overwrite") {
+  async upload2(access_token: string, localPath: string, path: string, ondup = "overwrite", type?: string) {
 
-    const uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${access_token}&path=${path}&ondup=${ondup}`;
+    let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${access_token}&path=${encodeURIComponent(path)}&ondup=${ondup}`;
+    if(type) {
+      uploadPath =  `${uploadPath}&type=${type}`;
+    }
     const fileStat = fs.statSync(localPath);
     const boundaryKey = Math.random().toString(16);
     const payload = `--${boundaryKey}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="file"; filename="${path}"\r\n\r\n`;
@@ -190,12 +193,11 @@ const PcsService = {
         path: uploadPath,
       }, res => {
         res.on('data', (data) => {
-          // 上传完成
-          // console.log('data', data.toString());
+          resolve(JSON.parse(data));
         });
         res.on('end', () => {
           // todo
-          resolve(void 0);
+          // resolve(void 0);
         });
       });
   
@@ -236,8 +238,15 @@ const PcsService = {
   },
 
   /** 分片上传 */
-  uploadPart({access_token}) {
-    // 
+  createSuperFile(access_token: string, path: string, param: object) {
+    return axios.get('/pcs/file', {
+      params: {
+        method: 'createsuperfile',
+        access_token,
+        path,
+        param: JSON.stringify(param)
+      }
+    });
   },
 };
 

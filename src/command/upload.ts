@@ -1,8 +1,10 @@
+import os from 'os';
+import { statSync } from 'fs';
 import { join, sep } from 'path';
 import { glob } from 'glob';
 import { type Command } from 'commander';
 import chalk from 'chalk';
-import { fileJSON, log, toRemotePath } from '@/utils';
+import { fileJSON, log, toRemotePath, splitFile } from '@/utils';
 import PcsService from '@/services/pcs';
 
 export default (program: Command) => {
@@ -11,16 +13,38 @@ export default (program: Command) => {
     .argument('[pattern]', 'glob pattern', '*')
     .argument('[remote]', 'remote path', sep)
     .option('-t --token [token]', 'access token')
-    .option('-b --bytes [size]', 'Split upload bytes size', '1073741824')
+    .option('-b --bytes [size]', 'Split upload bytes size')
     .option('--thread', 'Thread')
     .action(async (pattern, remote, options) => {
-      const files = await glob(pattern);
-
+      const files = await glob(pattern, {
+        nodir: true
+      });
+      const bytes = options.bytes === true ? 1073741824 : parseInt(options.bytes);
+      const temp = join(os.tmpdir(), 'pcs-cli');
       try {
         // 串行上传
-        files.reduce(async (prePromise, file) => {
-          await prePromise;
-          return PcsService.upload2(options.token, file, toRemotePath(join(remote, file))) as Promise<void>;
+        files.reduce(async (previousValue, currentValue) => {
+          await previousValue;
+          const fileStat = statSync(currentValue);
+
+          if( Number.isInteger(bytes) && fileStat.size > bytes) {
+            // 分片上传
+            const pieces = await splitFile(currentValue, bytes, temp);
+            const blocks = [];
+
+            for(const piece of pieces as string[]) {
+              //
+              const {md5} = await PcsService.upload2(options.token, piece, '', 'overwrite', 'tmpfile') as any;
+              blocks.push(md5);
+            }
+            const param = {
+              block_list: blocks
+            };
+            await PcsService.createSuperFile(options.token, toRemotePath(join(remote, currentValue)), param);
+          } else {
+            console.log('currentValue', currentValue);
+            return PcsService.upload2(options.token, currentValue, toRemotePath(join(remote, currentValue))) as Promise<void>;
+          }
         }, Promise.resolve());
         
       // todo 
