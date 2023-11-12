@@ -35,7 +35,7 @@ Commands:
 ```
 
 ### init
-在初始化之前，需要提供百度PCS应用的name，key，secret。如果没有请访问 https://pan.baidu.com/union/console/createapp[创建应用] 进行创建，如果已有应用请访问 https://pan.baidu.com/union/console/applist[应用列表] 查看应用信息。
+在初始化之前，需要提供百度PCS应用的name，key，secret。如果没有请访问 [创建应用](https://pan.baidu.com/union/console/createapp) 进行创建，如果已有应用请访问 [应用列表](https://pan.baidu.com/union/console/applist) 查看应用信息。
 
 ```sh
 pcs init

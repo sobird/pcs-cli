@@ -11,6 +11,7 @@ import ora from 'ora';
 import FormData from 'form-data';
 import chalk from 'chalk';
 import axios, { InternalHttpRequestConfig } from "@/utils/axios";
+import { splitFile } from '@/utils';
 
 interface OauthDeviceResponse {
   device_code: string;
@@ -232,13 +233,9 @@ const PcsService = {
   },
 
   /** 分片上传 */
-  uploadSuper() {
+  uploadPart({access_token}) {
     // 
   },
-  /** 下载文件 */
-  // download(access_token: string, path: string) {
-  //   return `https://d.pcs.baidu.com/rest/2.0/pcs/file?method=download&access_token=${access_token}&path=${path}`;
-  // }
 };
 
 export default PcsService;
