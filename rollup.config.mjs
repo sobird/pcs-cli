@@ -84,7 +84,7 @@ export default (env) => {
         copy({
           targets: [
             { src: 'package.json', dest: DIST },
-            { src: 'README.asciidoc', dest: DIST },
+            { src: 'README.md', dest: DIST },
             { src: 'LICENSE', dest: DIST },
           ],
           copyOnce: env.watch

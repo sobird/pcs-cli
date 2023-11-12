@@ -1,6 +1,6 @@
 {
   "name": "pcs-cli",
-  "description": "Baidu Personal Cloud Storage Scaffold.",
+  "description": "Baidu Personal Cloud Storage's Command Line Interface.",
   "version": "0.1.6",
   "type": "module",
   "bin": {
