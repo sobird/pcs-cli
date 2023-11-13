@@ -10,13 +10,13 @@ import {
   stat,
   statSync,
 } from "fs";
+import os from 'os';
 import { dirname, join, basename, resolve } from "path";
 import { createHash } from "crypto";
 import chalk from 'chalk';
-import osenv from 'osenv';
 import { name } from '../../package.json';
 
-const TMP = resolve(osenv.home(), '.' + name);
+const TMP = resolve(os.homedir(), '.' + name);
 export const JSON_TMP = {
   APP: resolve(TMP, 'pcsapp'),
   DEVICE: resolve(TMP, 'device'),

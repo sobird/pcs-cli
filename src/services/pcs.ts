@@ -5,11 +5,8 @@
  */
 import https from 'https';
 import fs from 'fs';
-import { dirname, basename } from 'path';
+import { dirname } from 'path';
 import Progress from 'progress';
-import ora from 'ora';
-import FormData from 'form-data';
-import chalk from 'chalk';
 import axios, { InternalHttpRequestConfig } from "@/utils/axios";
 
 interface OauthDeviceResponse {
@@ -146,30 +143,6 @@ const PcsService = {
   },
 
   /** 上传文件 */
-  async upload(access_token: string, localPath: string, path: string, ondup = "overwrite") {
-    const formData = new FormData();
-    const rs = fs.createReadStream(localPath);
-    formData.append('file', rs);
-    const formHeaders = formData.getHeaders();
-
-    const spinner = ora(`Uploading ${basename(localPath)}`).start();
-    return axios.post('https://c.pcs.baidu.com/rest/2.0/pcs/file', formData, {
-      headers: {
-        ...formHeaders
-      },
-      params: {
-        method: "upload",
-        access_token,
-        path,
-        ondup,
-      },
-      timeout: 0,
-      responseType: 'stream',
-      responseParser: (response) => response,
-    } as InternalHttpRequestConfig).then(() => {
-      spinner.succeed(`${chalk.green(basename(localPath))} was successful uploaded!`);
-    });
-  },
   async upload2(access_token: string, localPath: string, path: string, ondup = "overwrite", type?: string) {
 
     let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${access_token}&path=${encodeURIComponent(path)}&ondup=${ondup}`;
