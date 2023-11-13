@@ -44,7 +44,7 @@ pcs init
 
 [npm]: https://img.shields.io/npm/v/pcs-cli.svg
 [npm-url]: https://www.npmjs.com/package/pcs-cli
-[build-status]: https://github.com/yangjunlong/pcs-cli/workflows/pcs-cli/badge.svg?branch=master
-[build-status-url]: https://github.com/yangjunlong/pcs-cli/actions
+[build-status]: https://github.com/sobird/pcs-cli/workflows/pcs-cli/badge.svg?branch=master
+[build-status-url]: https://github.com/sobird/pcs-cli/actions
 [size]: https://packagephobia.com/badge?p=pcs-cli
 [size-url]: https://packagephobia.com/result?p=pcs-cli

@@ -71,7 +71,9 @@ export default (env) => {
         external({
           includeDependencies: true,
         }),
-        nodeResolve(),
+        nodeResolve({
+          preferBuiltins: true
+        }),
         commonjs(),
         typescript({
           check: false,
