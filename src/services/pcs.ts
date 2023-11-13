@@ -11,7 +11,6 @@ import ora from 'ora';
 import FormData from 'form-data';
 import chalk from 'chalk';
 import axios, { InternalHttpRequestConfig } from "@/utils/axios";
-import { splitFile } from '@/utils';
 
 interface OauthDeviceResponse {
   device_code: string;
@@ -201,6 +200,9 @@ const PcsService = {
         res.on('end', () => {
           // todo
           // resolve(void 0);
+        });
+        res.on('error', (err) => {
+          reject(err);
         });
       });
   
