@@ -22,16 +22,16 @@ pcs-cli [command] [options]
 ### 可用命令
 ```
 Commands:
-  init [options]                Initialize Baidu Personal Cloud Storage
-  refresh                       refresh token.
-  quota                         Check Your Cloud Storage Status.
-  meta <path>                   Get Path Meta.
-  list|ls <path>                list directory contents.
-  download|dl [remote] [local]  download remote file.
-  upload [local] [remote]       upload local file.
-  delete|rm [remote]            delete remote file.
-  fetch [source] [remote]       fetch source to remote.
-  help [command]                display help for command
+  init [options]                          Initialize Baidu Personal Cloud Storage
+  refresh [options]                       refresh token.
+  quota [options]                         check your cloud storage status.
+  meta [options] [path]                   get path meta.
+  list|ll [options] [path]                list directory contents.
+  upload [options] [pattern] [remote]     upload local file.
+  download|dl [options] [remote] [local]  download remote file.
+  delete|rm [options] <remote>            delete remote file.
+  fetch [options] [source] [remote]       fetch source to remote.
+  help [command]                          display help for command
 ```
 
 ### init
