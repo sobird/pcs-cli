@@ -29,6 +29,9 @@ const appListUrl = 'https://pan.baidu.com/union/console/applist';
 
 import init from '@/command/init';
 import upload from '@/command/upload';
+import refresh from '@/command/refresh';
+import quota from '@/command/quota';
+import meta from '@/command/meta';
 
 program
   .name(name)
@@ -43,86 +46,20 @@ program.hook('preAction', (thisCommand, actionCommand) => {
       log('Your access token does not exist or has expired', chalk.red);
       return;
     }
+
     actionCommand.setOptionValue('token', tokenOption.defaultValue || tokenJson.access_token);
+    ['key', 'secret', 'refresh_token'].map(item => {
+      tokenJson[item] && actionCommand.setOptionValue(item, tokenJson[item]);
+    });
   }
   // throw 'test';
 });
 
 init(program);
+refresh(program);
+quota(program);
+meta(program);
 upload(program);
-
-program.command('refresh')
-  .description('refresh token.')
-  .action(async () => {
-    const tokenJson = readUnexpiredJsonSync(tokenFile);
-    if (!tokenJson || !tokenJson.access_token) {
-      log('Your access token does not exist or has expired', chalk.red);
-      return;
-    }
-
-    try {
-      const res = await PcsService.refreshToken(tokenJson.key, tokenJson.secret, tokenJson.refresh_token);
-      writeJsonSync(tokenFile, {
-        ...res,
-        key: tokenJson.key,
-        secret: tokenJson.secret
-      });
-      log('Successfully refreshed token', chalk.green);
-    } catch (err: any) {
-      const { response: { data } } = err;
-      console.log(`OAuth error ${data.error} : ${data.error_description}`);
-      return;
-    }
-  });
-
-program.command('quota')
-  .description('Check Your Cloud Storage Status.')
-  .action(async () => {
-    const tokenJson = readUnexpiredJsonSync(tokenFile);
-    if (!tokenJson || !tokenJson.access_token) {
-      log('Your access token does not exist or has expired', chalk.red);
-      return;
-    }
-
-    try {
-      const { quota, used } = await PcsService.quotaInfo(tokenJson.access_token);
-      const bar = new Progress(':bar :aaa/:bbb :percent', {
-        complete: '█',
-        incomplete: '░',
-        width: 30,
-        total: quota
-      });
-      bar.tick(used, {
-        "aaa": bytes(used),
-        "bbb": bytes(quota)
-      });
-      console.log('');
-    } catch (err: any) {
-      const { response: { data } } = err;
-      console.log(`error code ${data.error_code} : ${data.error_msg}`);
-      return;
-    }
-  });
-
-program.command('meta')
-  .description('Get Path Meta.')
-  .argument('<path>', 'meta path')
-  .action(async (path) => {
-    const tokenJson = readUnexpiredJsonSync(tokenFile);
-    if (!tokenJson || !tokenJson.access_token) {
-      log('Your access token does not exist or has expired', chalk.red);
-      return;
-    }
-
-    try {
-      const res = await PcsService.getMeta(tokenJson.access_token, toRemotePath(path));
-      console.log('res', res);
-    } catch (err: any) {
-      const { response: { data } } = err;
-      console.log(`error code ${data.error_code} : ${data.error_msg}`);
-      return;
-    }
-  });
 
 program.command('list')
   .description('list directory contents.')
