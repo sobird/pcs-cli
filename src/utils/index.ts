@@ -23,9 +23,9 @@ export const JSON_TMP = {
   TOKEN: resolve(TMP, 'token'),
 };
 
-export const EXPIRES_IN = 2592000; // 单位s
-const CREATE_APP_URL = 'https://pan.baidu.com/union/console/createapp';
-const APP_LIST_URL = 'https://pan.baidu.com/union/console/applist';
+export const EXPIRES_IN = 2592000; // 单位
+export const CREATE_APP_URL = 'https://pan.baidu.com/union/console/createapp';
+export const APP_LIST_URL = 'https://pan.baidu.com/union/console/applist';
 
 export function fileJSON(name: keyof typeof JSON_TMP, json?: object) {
   if (json) {
