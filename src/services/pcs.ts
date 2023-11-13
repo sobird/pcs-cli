@@ -41,6 +41,8 @@ interface PcsFile {
   server_filename: string;
   server_ctime: number;
   server_mtime: number;
+  size: number;
+  isdir: 0 | 1;
 }
 
 interface ListFileResponse {

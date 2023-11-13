@@ -32,6 +32,7 @@ import upload from '@/command/upload';
 import refresh from '@/command/refresh';
 import quota from '@/command/quota';
 import meta from '@/command/meta';
+import list from '@/command/list';
 
 program
   .name(name)
@@ -59,31 +60,8 @@ init(program);
 refresh(program);
 quota(program);
 meta(program);
+list(program);
 upload(program);
-
-program.command('list')
-  .description('list directory contents.')
-  .argument('<path>', 'path')
-  .alias('ls')
-  .action(async (path) => {
-    const tokenJson = readUnexpiredJsonSync(tokenFile);
-    if (!tokenJson || !tokenJson.access_token) {
-      log('Your access token does not exist or has expired', chalk.red);
-      return;
-    }
-
-    try {
-      const { list } = await PcsService.listFile(tokenJson.access_token, toRemotePath(path));
-      list.map(item => {
-        console.log(dayjs.unix(item.server_mtime).format('YYYY-MM-DD HH:mm:ss'), item.server_filename);
-        return item;
-      });
-    } catch (err: any) {
-      const { response: { data } } = err;
-      console.log(`error code ${data.error_code} : ${data.error_msg}`);
-      return;
-    }
-  });
 
 program.command('download [remote] [local]')
   .description('download remote file.')
