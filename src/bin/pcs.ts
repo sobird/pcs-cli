@@ -34,6 +34,7 @@ import quota from '@/command/quota';
 import meta from '@/command/meta';
 import list from '@/command/list';
 import download from '@/command/download';
+import rm from '@/command/delete';
 
 program
   .name(name)
@@ -64,29 +65,8 @@ meta(program);
 list(program);
 upload(program);
 download(program);
+rm(program);
 
-
-program.command('delete [remote]')
-  .alias('rm')
-  .description('delete remote file.')
-  .action(async (remote) => {
-    const tokenJson = readUnexpiredJsonSync(tokenFile);
-    if (!tokenJson || !tokenJson.access_token) {
-      log('Your access token does not exist or has expired', chalk.red);
-      return;
-    }
-
-    const remoteFilename = toRemotePath(remote);
-
-    try {
-      await PcsService.delete(tokenJson.access_token, remoteFilename,);
-      // todo 
-    } catch (err: any) {
-      const { response: { data } } = err;
-      console.log(`error code ${data.error_code} : ${data.error_msg}`);
-      return;
-    }
-  });
 
 program.command('fetch [source] [remote]')
   .description('fetch source to remote.')
