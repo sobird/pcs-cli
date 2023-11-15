@@ -10,11 +10,8 @@ import { dirname, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import external from 'rollup-plugin-peer-deps-external';
-import typescript from 'rollup-plugin-typescript2';
-// import typescript from '@rollup/plugin-typescript';
+import esbuild from 'rollup-plugin-esbuild';
 import commonjs from '@rollup/plugin-commonjs';
-import { babel } from '@rollup/plugin-babel';
-import terser from '@rollup/plugin-terser';
 import json from '@rollup/plugin-json';
 import copy from 'rollup-plugin-copy';
 import clear from 'rollup-plugin-clear';
@@ -75,14 +72,13 @@ export default (env) => {
           preferBuiltins: true
         }),
         commonjs(),
-        typescript({
-          check: false,
+        esbuild({
+          // check: false,
           // declaration: true,
           // tsconfig: "./src/tsconfig.json",
           // noEmitOnError: false,
         }),
         json(),
-        isProduction && terser(),
         copy({
           targets: [
             { src: 'package.json', dest: DIST },
