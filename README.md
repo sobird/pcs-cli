@@ -41,6 +41,10 @@ Commands:
 pcs init -n name -k key -s secret
 # 或者 根据提示填写应用的name key secret
 pcs init 
+# 如果本地已存在有效的access_token 再次运行该命令将会有如下提示
+Your access token has not expired (expiration date: 2023-12-10 22:49:14).
+? Do you want to continue initializing? › (y/N)
+# 选择yes将会重新生成token，否则取消操作
 ```
 初始化完成后，将在本地生成一个有效期30天的token，存放路径为`~/.pcs-cli`。
 
@@ -70,6 +74,41 @@ pcs quota
 ```sh
 # 不指定路径，默认使用应用的根路径
 pcs meta
+{
+  app_id: 123456,
+  category: 6,
+  ctime: 1699853947,
+  extent_int3: 2919719500,
+  extent_tinyint1: 0,
+  extent_tinyint2: 0,
+  extent_tinyint3: 0,
+  extent_tinyint4: 0,
+  from_type: 0,
+  fs_id: 680163361072043,
+  ifhassubdir: 0,
+  isdelete: 0,
+  isdir: 1,
+  local_ctime: 1699853947,
+  local_mtime: 1699853947,
+  mtime: 1699873611,
+  oper_id: 2919719500,
+  owner_id: 0,
+  owner_type: 0,
+  parent_path: '/apps',
+  path: '/apps/appName',
+  privacy: 2,
+  real_category: '',
+  server_ctime: 1699853947,
+  server_filename: 'appName',
+  server_mtime: 1699873611,
+  share: 0,
+  size: 0,
+  status: 0,
+  tkbind_id: 0,
+  user_id: 12345678,
+  videotag: 0,
+  wpfile: 0
+}
 ```
 
 ### list
