@@ -13,14 +13,13 @@ export default (program: Command) => {
         fileJSON('TOKEN', {
           ...res,
           key: options.key,
-          secret: options.secret
+          secret: options.secret,
         });
 
         log('Successfully refreshed token', chalk.green);
       } catch (err: any) {
         const { response: { data } } = err;
         log(`OAuth error ${data.error} : ${data.error_description}`, chalk.red);
-        return;
       }
     });
 };

@@ -4,7 +4,6 @@ import prompts from 'prompts';
 import { log, toRemotePath } from '@/utils';
 import PcsService from '@/services/pcs';
 
-
 export default (program: Command) => {
   program.command('delete')
     .alias('rm')
@@ -14,26 +13,25 @@ export default (program: Command) => {
     .action(async (remote, options) => {
       const remoteFilename = toRemotePath(remote);
 
-      if(remoteFilename == toRemotePath('/')) {
-        log(`You are about to delete the root directory of the application, which will lose all data`, chalk.red);
+      if (remoteFilename === toRemotePath('/')) {
+        log('You are about to delete the root directory of the application, which will lose all data', chalk.red);
         const { confirm } = await prompts({
-          type: "confirm",
+          type: 'confirm',
           name: 'confirm',
-          message: `Are you sure you want to continue?`,
-          initial: false
+          message: 'Are you sure you want to continue?',
+          initial: false,
         });
-        
-        if(!confirm) {
+
+        if (!confirm) {
           return;
         }
       }
 
       try {
-        await PcsService.delete(options.token, remoteFilename,);
+        await PcsService.delete(options.token, remoteFilename);
       } catch (err: any) {
         const { response: { data } } = err;
         log(`error code ${data.error_code} : ${data.error_msg}`, chalk.red);
-        return;
       }
     });
 };

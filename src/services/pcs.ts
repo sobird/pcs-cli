@@ -1,13 +1,13 @@
 /**
  * Baidu Personal Cloud Storage Services
- * 
+ *
  * sobird<i@sobird.me> at 2023/11/09 19:42:40 created.
  */
 import https from 'https';
 import fs from 'fs';
 import { dirname } from 'path';
 import Progress from 'progress';
-import axios, { InternalHttpRequestConfig } from "@/utils/axios";
+import axios, { InternalHttpRequestConfig } from '@/utils/axios';
 
 interface OauthDeviceResponse {
   device_code: string;
@@ -52,9 +52,9 @@ const PcsService = {
     return axios.get<unknown, OauthDeviceResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
       params: {
         client_id: appKey,
-        response_type: "device_code",
-        scope: "basic,netdisk"
-      }
+        response_type: 'device_code',
+        scope: 'basic,netdisk',
+      },
     });
   },
   oauthToken(appKey: string, appSec: string, device_code: string) {
@@ -63,9 +63,9 @@ const PcsService = {
         client_id: appKey,
         client_secret: appSec,
         code: device_code,
-        grant_type: "device_token",
-        scope: "basic,netdisk"
-      }
+        grant_type: 'device_token',
+        scope: 'basic,netdisk',
+      },
     });
   },
   /** 刷新token */
@@ -75,8 +75,8 @@ const PcsService = {
         client_id,
         client_secret,
         refresh_token,
-        grant_type: "refresh_token",
-      }
+        grant_type: 'refresh_token',
+      },
     });
   },
 
@@ -84,29 +84,29 @@ const PcsService = {
   quotaInfo(access_token: string) {
     return axios.get<unknown, QuotaResponse>('/pcs/quota', {
       params: {
-        method: "info",
+        method: 'info',
         access_token,
-      }
+      },
     });
   },
 
   getMeta(access_token: string, path: string) {
     return axios.get<unknown>('/pcs/file', {
       params: {
-        method: "meta",
+        method: 'meta',
         access_token,
-        path
-      }
+        path,
+      },
     });
   },
 
   listFile(access_token: string, path: string) {
     return axios.get<unknown, ListFileResponse>('/pcs/file', {
       params: {
-        method: "list",
+        method: 'list',
         access_token,
-        path
-      }
+        path,
+      },
     });
   },
 
@@ -115,12 +115,12 @@ const PcsService = {
     const writer = fs.createWriteStream(local);
     const { data, headers } = await axios.get('/pcs/file', {
       params: {
-        method: "download",
+        method: 'download',
         access_token,
-        path
+        path,
       },
       responseType: 'stream',
-      responseParser: (response) => response,
+      responseParser: (response) => { return response; },
     } as InternalHttpRequestConfig);
 
     const totalLength = headers['content-length'];
@@ -130,10 +130,10 @@ const PcsService = {
       incomplete: ' ',
       width: 40,
       // renderThrottle: 1,
-      total: parseInt(totalLength)
+      total: parseInt(totalLength, 10),
     });
 
-    data.on('data', (chunk) => progressBar.tick(chunk.length));
+    data.on('data', (chunk: Buffer) => { return progressBar.tick(chunk.length); });
     data.pipe(writer);
 
     return new Promise((resolve, reject) => {
@@ -143,22 +143,21 @@ const PcsService = {
   },
 
   /** 上传文件 */
-  async upload2(access_token: string, localPath: string, path: string, ondup = "overwrite", type?: string) {
-
+  async upload2(access_token: string, localPath: string, path: string, ondup = 'overwrite', type?: string) {
     let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${access_token}&path=${encodeURIComponent(path)}&ondup=${ondup}`;
-    if(type) {
-      uploadPath =  `${uploadPath}&type=${type}`;
+    if (type) {
+      uploadPath = `${uploadPath}&type=${type}`;
     }
     const fileStat = fs.statSync(localPath);
     const boundaryKey = Math.random().toString(16);
     const payload = `--${boundaryKey}\r\nContent-Type: text/plain\r\nContent-Disposition: form-data; name="file"; filename="${path}"\r\n\r\n`;
-    const enddata = '\r\n--' + boundaryKey + '--';
+    const enddata = `\r\n--${boundaryKey}--`;
     const contentLength = Buffer.byteLength(payload) + Buffer.byteLength(enddata) + fileStat.size;
     const progressBar = new Progress('[:bar] :rate/bps :percent :etas', {
       complete: '=',
       incomplete: ' ',
       width: 40,
-      total: fileStat.size
+      total: fileStat.size,
     });
 
     return new Promise((resolve, reject) => {
@@ -166,7 +165,7 @@ const PcsService = {
         hostname: 'pcs.baidu.com',
         method: 'POST',
         path: uploadPath,
-      }, res => {
+      }, (res) => {
         res.on('data', (data) => {
           resolve(JSON.parse(data));
         });
@@ -178,14 +177,14 @@ const PcsService = {
           reject(err);
         });
       });
-  
+
       req.setHeader('Content-Type', `multipart/form-data; boundary=${boundaryKey}`);
       req.setHeader('Content-Length', contentLength);
       req.write(payload);
-  
+
       const fileStream = fs.createReadStream(localPath);
       fileStream.pipe(req, { end: false });
-      fileStream.on('end', function () {
+      fileStream.on('end', () => {
         req.end(enddata);
       });
       fileStream.on('data', (chunk) => {
@@ -197,21 +196,21 @@ const PcsService = {
   delete(access_token: string, path: string) {
     return axios.get('/pcs/file', {
       params: {
-        method: "delete",
+        method: 'delete',
         access_token,
         path,
-      }
+      },
     });
   },
   /** 离线下载 */
-  fetch(access_token: string, source_url: string, save_path: string,) {
+  fetch(access_token: string, source_url: string, save_path: string) {
     return axios.get('/pcs/services/cloud_dl', {
       params: {
         method: 'add_task',
         access_token,
         save_path,
         source_url,
-      }
+      },
     });
   },
 
@@ -222,8 +221,8 @@ const PcsService = {
         method: 'createsuperfile',
         access_token,
         path,
-        param: JSON.stringify(param)
-      }
+        param: JSON.stringify(param),
+      },
     });
   },
 };

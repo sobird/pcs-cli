@@ -16,8 +16,8 @@ export default (program: Command) => {
 
       try {
         const { list } = await PcsService.listFile(options.token, remoteFilename);
-        
-        if(list.length === 0) {
+
+        if (list.length === 0) {
           list.push({
             server_filename: remoteFilename,
             path: remoteFilename,
@@ -25,25 +25,21 @@ export default (program: Command) => {
           } as any);
         }
 
-
         list.reduce(async (previousValue, currentValue) => {
           await previousValue;
           const localFilename = join(local, toLocalPath(currentValue.path));
 
-          console.log(currentValue.path, localFilename);
-
-          if(currentValue.isdir === 1) {
+          if (currentValue.isdir === 1) {
             return Promise.resolve();
           }
 
           log(`${chalk.blueBright('==>')} Downloading ${chalk.green(localFilename)}`);
           return PcsService.download(options.token, currentValue.path, localFilename) as any;
         }, Promise.resolve());
-      // todo 
+      // todo
       } catch (err: any) {
         const { response: { data } } = err;
         log(`error code ${data.error_code || data.statusCode} : ${data.error_msg || data.statusMessage}`, chalk.red);
-        return;
       }
     });
 };

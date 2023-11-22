@@ -6,7 +6,7 @@
  * sobird<i@sobird.me> at 2021/02/20 11:18:13 created.
  */
 
-import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 export type ResponseParser<T = unknown> = (response: AxiosResponse) => T;
 
@@ -28,7 +28,7 @@ interface HttpResponse<T = unknown, D = unknown> extends AxiosResponse<T, D> {
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 10 * 1000;
 // 全局默认的baseURL参数配置
-axios.defaults.baseURL = "https://pcs.baidu.com/rest/2.0";
+axios.defaults.baseURL = 'https://pcs.baidu.com/rest/2.0';
 
 // axios.defaults.headers.common['Request-Source'] = 2;
 // ssoid
@@ -42,7 +42,7 @@ axios.interceptors.request.use(
   },
   (error: AxiosError) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // 响应拦截器
@@ -67,7 +67,7 @@ axios.interceptors.response.use(
       // 请求已经成功发起，但没有收到响应
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axios;

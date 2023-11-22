@@ -4,7 +4,9 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { name, version } from '../../package.json';
-import { CREATE_APP_URL, APP_LIST_URL, log, fileJSON } from '@/utils';
+import {
+  CREATE_APP_URL, APP_LIST_URL, log, fileJSON,
+} from '@/utils';
 
 import init from '@/command/init';
 import upload from '@/command/upload';
@@ -24,8 +26,8 @@ program
   .version(version);
 
 program.hook('preAction', (thisCommand, actionCommand) => {
-  const tokenOption = actionCommand.options.find(option => option.long === '--token');
-  if(tokenOption) {
+  const tokenOption = actionCommand.options.find((option) => { return option.long === '--token'; });
+  if (tokenOption) {
     const tokenJson = fileJSON('TOKEN');
     if (!tokenJson || !tokenJson.access_token) {
       log('Your access token does not exist or has expired', chalk.red);
@@ -33,8 +35,8 @@ program.hook('preAction', (thisCommand, actionCommand) => {
     }
 
     actionCommand.setOptionValue('token', tokenOption.defaultValue || tokenJson.access_token);
-    ['key', 'secret', 'refresh_token'].map(item => {
-      tokenJson[item] && actionCommand.setOptionValue(item, tokenJson[item]);
+    ['key', 'secret', 'refresh_token'].map((item) => {
+      return tokenJson[item] && actionCommand.setOptionValue(item, tokenJson[item]);
     });
   }
   // throw 'test';

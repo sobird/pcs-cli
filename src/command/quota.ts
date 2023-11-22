@@ -16,17 +16,16 @@ export default (program: Command) => {
           complete: '█',
           incomplete: chalk.green('░'),
           width: 30,
-          total: quota
+          total: quota,
         });
         bar.tick(used, {
-          "used": bytes(used),
-          "quota": bytes(quota)
+          used: bytes(used),
+          quota: bytes(quota),
         });
         log('');
       } catch (err: any) {
         const { response: { data } } = err;
         log(`error code ${data.error_code} : ${data.error_msg}`, chalk.red);
-        return;
       }
     });
 };

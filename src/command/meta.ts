@@ -16,7 +16,6 @@ export default (program: Command) => {
       } catch (err: any) {
         const { response: { data } } = err;
         log(`error code ${data.error_code} : ${data.error_msg}`, chalk.red);
-        return;
       }
     });
 };
