@@ -9,7 +9,7 @@ import PcsService from '@/services/pcs';
 
 export default (program: Command) => {
   program.command('list')
-    .description('list directory contents.')
+    .description('list directory contents')
     .argument('[path]', 'path', sep)
     .alias('ll')
     .option('-t --token [token]', 'access token')

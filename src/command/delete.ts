@@ -7,7 +7,7 @@ import PcsService from '@/services/pcs';
 export default (program: Command) => {
   program.command('delete')
     .alias('rm')
-    .description('delete remote file.')
+    .description('delete remote file')
     .argument('<remote>', 'remote path')
     .option('-t --token [token]', 'access token')
     .action(async (remote, options) => {

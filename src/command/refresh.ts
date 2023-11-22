@@ -5,7 +5,7 @@ import PcsService from '@/services/pcs';
 
 export default (program: Command) => {
   program.command('refresh')
-    .description('refresh token.')
+    .description('refresh token')
     .option('-t --token [token]', 'access token')
     .action(async (options) => {
       try {

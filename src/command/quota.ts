@@ -7,7 +7,7 @@ import PcsService from '@/services/pcs';
 
 export default (program: Command) => {
   program.command('quota')
-    .description('check your cloud storage status.')
+    .description('check your pcs status')
     .option('-t --token [token]', 'access token')
     .action(async (options) => {
       try {

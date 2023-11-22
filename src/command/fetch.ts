@@ -7,7 +7,7 @@ import PcsService from '@/services/pcs';
 export default (program: Command) => {
   program
     .command('fetch')
-    .description('fetch source to remote.')
+    .description('fetch source to remote')
     .argument('[source]', 'source path', sep)
     .argument('[remote]', 'remote path', '.')
     .option('-t --token [token]', 'access token')

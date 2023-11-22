@@ -13,7 +13,7 @@ import PcsService from '@/services/pcs';
 
 export default (program: Command) => {
   program.command('init')
-    .description('Initialize Baidu Personal Cloud Storage')
+    .description('initialize baidu pcs')
     .option('-n, --name <string>', 'app name')
     .option('-k, --key <string>', 'app key')
     .option('-s, --secret <string>', 'app secret')

@@ -10,7 +10,7 @@ import PcsService from '@/services/pcs';
 
 export default (program: Command) => {
   program.command('upload')
-    .description('upload local file.')
+    .description('upload local file')
     .argument('[pattern]', 'glob pattern', '*')
     .argument('[remote]', 'remote path', sep)
     .option('-t --token [token]', 'access token')

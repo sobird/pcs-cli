@@ -7,7 +7,7 @@ import PcsService from '@/services/pcs';
 export default (program: Command) => {
   program.command('download')
     .alias('dl')
-    .description('download remote file.')
+    .description('download remote file')
     .argument('[remote]', 'remote path', sep)
     .argument('[local]', 'local path', '.')
     .option('-t --token [token]', 'access token')

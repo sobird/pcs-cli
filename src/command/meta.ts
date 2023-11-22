@@ -6,7 +6,7 @@ import PcsService from '@/services/pcs';
 
 export default (program: Command) => {
   program.command('meta')
-    .description('get path meta.')
+    .description('get path meta')
     .argument('[path]', 'meta path', sep)
     .option('-t --token [token]', 'access token')
     .action(async (path, options) => {
