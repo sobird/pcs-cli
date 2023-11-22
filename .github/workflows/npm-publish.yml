@@ -24,7 +24,7 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: ${{ runner.os }}-mtm-${{ hashFiles('**/package.json') }}
+        key: ${{ runner.os }}-sobird-${{ hashFiles('**/yarn.lock') }}
     - name: Install Dependencies 🔧
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
