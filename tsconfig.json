@@ -110,6 +110,5 @@
   "files": [         // by whitelisting the files to include, you avoid the default TS behavior, which
     "package.json"   // will include everything, resulting in `src` being included in both projects (bad)
   ],
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "**/__tests__/*"]
+  "include": ["src", ".eslintrc.cjs", "rollup.config.js"]
 }

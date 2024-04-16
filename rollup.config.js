@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /**
  * rollup.config.js
  * @type {import('rollup').RollupOptions}
