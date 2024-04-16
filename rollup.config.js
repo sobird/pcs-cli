@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import external from 'rollup-plugin-peer-deps-external';
 import typescript from 'rollup-plugin-typescript2';
+import terser from '@rollup/plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import copy from 'rollup-plugin-copy';
@@ -78,7 +79,9 @@ export default (env) => {
           // declaration: true,
           // tsconfig: "./src/tsconfig.json",
           // noEmitOnError: false,
+          strictRequires: true,
         }),
+        terser(),
         json(),
         copy({
           targets: [
