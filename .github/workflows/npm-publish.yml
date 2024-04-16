@@ -31,7 +31,7 @@ jobs:
         yarn
     - name: Build pcs-cli
       run: |
-        yarn build:rollup
+        yarn build
         cd dist
         npm publish
       env:
