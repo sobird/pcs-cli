@@ -110,6 +110,6 @@
   "files": [         // by whitelisting the files to include, you avoid the default TS behavior, which
     "package.json"   // will include everything, resulting in `src` being included in both projects (bad)
   ],
-  "include": ["src", ".eslintrc.cjs"],
+  "include": ["src", "**/*.js"],
   "exclude": ["node_modules", "dist", "**/__tests__/*"]
 }

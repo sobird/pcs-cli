@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   extends: [
-    'sobird/typescript.cjs',
+    '@sobird/eslint-config/typescript.cjs',
   ],
   rules: {
     'import/no-import-module-exports': ['error', {

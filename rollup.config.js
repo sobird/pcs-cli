@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /**
  * rollup.config.js
  * @type {import('rollup').RollupOptions}
@@ -27,12 +28,12 @@ function input(pattern) {
     ignore: ['src/**/*.d.ts'],
     cwd: __dirname,
     absolute: false,
-  }).reduce((map, filename) => {
-    map[relative(
+  }).reduce((accu, filename) => {
+    accu[relative(
       'src',
-      filename.slice(0, filename.length - extname(filename).length)
+      filename.slice(0, filename.length - extname(filename).length),
     )] = filename;
-    return map;
+    return accu;
   }, {});
 }
 
@@ -69,7 +70,7 @@ export default (env) => {
           includeDependencies: true,
         }),
         nodeResolve({
-          preferBuiltins: true
+          preferBuiltins: true,
         }),
         commonjs(),
         typescript({
@@ -85,8 +86,8 @@ export default (env) => {
             { src: 'README.md', dest: DIST },
             { src: 'LICENSE', dest: DIST },
           ],
-          copyOnce: env.watch
-        })
+          copyOnce: env.watch,
+        }),
       ],
     },
   ]);

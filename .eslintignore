@@ -1,6 +1,2 @@
 node_modules/
 dist/
-rollup.watch.js
-afterBuildScript.js
-.eslintrc.cjs
-rollup.config.mjs

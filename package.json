@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "rollup -cw --watch.onEnd='node ./afterBuildScript.js' --environment NODE_ENV:development",
     "start": "tsc -w",
-    "build:rollup": "rollup -c --environment NODE_ENV:production",
+    "build": "rollup -c --environment NODE_ENV:production",
     "build:esm": "tsc -m es6 --outDir dist/esm",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:eslint": "eslint \"src/**/*.{ts,js}\" --fix",
@@ -64,7 +64,7 @@
     "@types/progress": "^2.0.7",
     "@types/prompts": "^2.4.8",
     "esbuild": "^0.19.5",
-    "eslint-config-sobird": "^0.1.14",
+    "@sobird/eslint-config": "^0.2.7",
     "jest": "^29.7.0",
     "rollup": "^4.3.0",
     "rollup-plugin-clear": "^2.0.7",
