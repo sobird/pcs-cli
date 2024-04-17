@@ -156,7 +156,7 @@ pcs fetch [source] [remote]
 
 [npm]: https://img.shields.io/npm/v/pcs-cli.svg
 [npm-url]: https://www.npmjs.com/package/pcs-cli
-[build-status]: https://img.shields.io/github/actions/workflow/status/sobird/pcs-cli/npm-publish.yml?label=CI&logo=github
+[build-status]: https://img.shields.io/github/actions/workflow/status/sobird/pcs-cli/release-please.yml?label=CI&logo=github
 [build-status-url]: https://github.com/sobird/pcs-cli/actions
 [size]: https://packagephobia.com/badge?p=pcs-cli
 [size-url]: https://packagephobia.com/result?p=pcs-cli

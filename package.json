@@ -11,7 +11,7 @@
     "start": "tsc -w",
     "build": "rollup -c --environment NODE_ENV:production",
     "build:esm": "tsc -m es6 --outDir dist/esm",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\"",
     "lint:eslint": "eslint \"src/**/*.{ts,js}\" --fix",
     "preversion": "yarn lint:eslint",
     "version": "git add -A .",
