@@ -1,8 +1,8 @@
 import { type Command } from 'commander';
 import { join, sep } from 'path';
 import chalk from 'chalk';
-import { log, toLocalPath, toRemotePath } from '@/utils';
-import PcsService from '@/services/pcs';
+import { log, toLocalPath, toRemotePath } from 'utils';
+import PcsService from 'services/pcs';
 
 export default (program: Command) => {
   program.command('download')

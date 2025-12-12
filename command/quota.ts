@@ -2,8 +2,8 @@ import { type Command } from 'commander';
 import Progress from 'progress';
 import chalk from 'chalk';
 import bytes from 'bytes';
-import { log } from '@/utils';
-import PcsService from '@/services/pcs';
+import { log } from 'utils';
+import PcsService from 'services/pcs';
 
 export default (program: Command) => {
   program.command('quota')

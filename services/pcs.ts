@@ -7,7 +7,7 @@ import https from 'https';
 import fs from 'fs';
 import { dirname } from 'path';
 import Progress from 'progress';
-import axios, { InternalHttpRequestConfig } from '@/utils/axios';
+import axios, { InternalHttpRequestConfig } from 'utils/axios';
 
 interface OauthDeviceResponse {
   device_code: string;

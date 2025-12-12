@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import { createHash } from 'crypto';
 import {
   createReadStream,
   readFile,
@@ -15,9 +16,10 @@ import os from 'os';
 import {
   dirname, join, basename, resolve,
 } from 'path';
-import { createHash } from 'crypto';
+
 import chalk from 'chalk';
-import { name } from '../../package.json';
+
+import { name } from '../package.json';
 
 const TMP = resolve(os.homedir(), `.${name}`);
 export const JSON_TMP = {

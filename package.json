@@ -21,18 +21,6 @@
     "type": "git",
     "url": "git+https://github.com/sobird/pcs-cli.git"
   },
-  "dependencies": {
-    "axios": "^1.6.1",
-    "bytes": "^3.1.2",
-    "chalk": "^5.3.0",
-    "cliui": "^8.0.1",
-    "commander": "^11.1.0",
-    "dayjs": "^1.11.10",
-    "glob": "^10.3.10",
-    "open": "^9.1.0",
-    "progress": "^2.0.3",
-    "prompts": "^2.4.2"
-  },
   "keywords": [
     "pcs-cli",
     "pcs",
@@ -54,6 +42,18 @@
   ],
   "readmeFilename": "README.md",
   "homepage": "https://github.com/sobird/pcs-cli",
+  "dependencies": {
+    "axios": "^1.6.1",
+    "bytes": "^3.1.2",
+    "chalk": "^5.3.0",
+    "cliui": "^8.0.1",
+    "commander": "^11.1.0",
+    "dayjs": "^1.11.10",
+    "glob": "^10.3.10",
+    "open": "^9.1.0",
+    "progress": "^2.0.3",
+    "prompts": "^2.4.2"
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.2.2",
     "@commitlint/config-conventional": "^19.2.2",
@@ -67,7 +67,7 @@
     "@types/progress": "^2.0.7",
     "@types/prompts": "^2.4.8",
     "esbuild": "^0.19.5",
-    "eslint-config-sobird": "^0.2.13",
+    "eslint-config-sobird": "^0.2.16",
     "husky": "^9.0.11",
     "jest": "^29.7.0",
     "rollup": "^4.3.0",
@@ -76,8 +76,6 @@
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-typescript2": "^0.36.0",
-    "ts-jest": "^29.1.1",
-    "tslib": "^2.6.2",
     "typescript": "^5.2.2"
   },
   "publishConfig": {

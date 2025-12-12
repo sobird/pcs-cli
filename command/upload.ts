@@ -5,8 +5,8 @@ import { join, sep } from 'path';
 import { glob } from 'glob';
 import { type Command } from 'commander';
 import chalk from 'chalk';
-import { log, toRemotePath, splitFile } from '@/utils';
-import PcsService from '@/services/pcs';
+import { log, toRemotePath, splitFile } from 'utils';
+import PcsService from 'services/pcs';
 
 export default (program: Command) => {
   program.command('upload')

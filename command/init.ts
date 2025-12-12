@@ -8,8 +8,8 @@ import dayjs from 'dayjs';
 import open from 'open';
 import {
   fileJSON, log, JSON_TMP, EXPIRES_IN,
-} from '@/utils';
-import PcsService from '@/services/pcs';
+} from 'utils';
+import PcsService from 'services/pcs';
 
 export default (program: Command) => {
   program.command('init')

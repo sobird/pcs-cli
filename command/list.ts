@@ -4,8 +4,8 @@ import chalk from 'chalk';
 import dayjs from 'dayjs';
 import bytes from 'bytes';
 import cliui from 'cliui';
-import { log, toRemotePath } from '@/utils';
-import PcsService from '@/services/pcs';
+import { log, toRemotePath } from 'utils';
+import PcsService from 'services/pcs';
 
 export default (program: Command) => {
   program.command('list')

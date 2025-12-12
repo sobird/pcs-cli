@@ -7,6 +7,7 @@ module.exports = {
     'import/no-import-module-exports': ['error', {
       exceptions: ['**/*'],
     }],
+    'import/no-unresolved': 'off',
     'arrow-body-style': ['error', 'always'],
   },
 };

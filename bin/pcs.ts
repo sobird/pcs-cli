@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Command } from 'commander';
 import chalk from 'chalk';
-import { name, version } from '../../package.json';
+import { Command } from 'commander';
 import {
   CREATE_APP_URL, APP_LIST_URL, log, fileJSON,
-} from '@/utils';
+} from 'utils';
 
-import init from '@/command/init';
-import upload from '@/command/upload';
-import refresh from '@/command/refresh';
-import quota from '@/command/quota';
-import meta from '@/command/meta';
-import list from '@/command/list';
-import download from '@/command/download';
 import rm from '@/command/delete';
+import download from '@/command/download';
 import fetch from '@/command/fetch';
+import init from '@/command/init';
+import list from '@/command/list';
+import meta from '@/command/meta';
+import quota from '@/command/quota';
+import refresh from '@/command/refresh';
+import upload from '@/command/upload';
+import { name, version } from '@/package.json' with { type: 'json' };
 
 const program = new Command();
 

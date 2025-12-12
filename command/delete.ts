@@ -1,8 +1,8 @@
 import { type Command } from 'commander';
 import chalk from 'chalk';
 import prompts from 'prompts';
-import { log, toRemotePath } from '@/utils';
-import PcsService from '@/services/pcs';
+import { log, toRemotePath } from 'utils';
+import PcsService from 'services/pcs';
 
 export default (program: Command) => {
   program.command('delete')
