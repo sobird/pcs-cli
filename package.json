@@ -13,7 +13,7 @@
     "build:esm": "tsc -m es6 --outDir dist/esm",
     "test": "echo \"pre-commit scripts\"",
     "lint:eslint": "eslint \"src/**/*.{ts,js}\" --fix",
-    "preversion": "yarn lint:eslint",
+    "preversion": "npm run lint:eslint",
     "version": "git add -A .",
     "postversion": "git push && git push --tags"
   },
@@ -69,14 +69,14 @@
     "esbuild": "^0.19.5",
     "eslint-config-sobird": "^0.2.16",
     "husky": "^9.0.11",
-    "jest": "^29.7.0",
     "rollup": "^4.3.0",
     "rollup-plugin-clear": "^2.0.7",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-typescript2": "^0.36.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

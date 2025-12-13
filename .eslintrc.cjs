@@ -4,6 +4,7 @@ module.exports = {
     'sobird/typescript.cjs',
   ],
   rules: {
+    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-import-module-exports': ['error', {
       exceptions: ['**/*'],
     }],
