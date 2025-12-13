@@ -43,11 +43,12 @@
   "readmeFilename": "README.md",
   "homepage": "https://github.com/sobird/pcs-cli",
   "dependencies": {
+    "@commander-js/extra-typings": "^14.0.0",
     "axios": "^1.6.1",
     "bytes": "^3.1.2",
     "chalk": "^5.3.0",
     "cliui": "^8.0.1",
-    "commander": "^11.1.0",
+    "commander": "^14.0.2",
     "dayjs": "^1.11.10",
     "glob": "^10.3.10",
     "open": "^9.1.0",

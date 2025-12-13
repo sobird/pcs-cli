@@ -3,9 +3,10 @@
  *
  * sobird<i@sobird.me> at 2023/11/09 19:42:40 created.
  */
-import https from 'https';
 import fs from 'fs';
+import https from 'https';
 import { dirname } from 'path';
+
 import Progress from 'progress';
 import axios, { InternalHttpRequestConfig } from 'utils/axios';
 
@@ -100,7 +101,7 @@ const PcsService = {
     });
   },
 
-  listFile(access_token: string, path: string) {
+  listFile(path: string, access_token: string) {
     return axios.get<unknown, ListFileResponse>('/pcs/file', {
       params: {
         method: 'list',
@@ -193,7 +194,7 @@ const PcsService = {
     });
   },
   /** 删除文件 */
-  delete(access_token: string, path: string) {
+  delete(path: string, access_token: string) {
     return axios.get('/pcs/file', {
       params: {
         method: 'delete',

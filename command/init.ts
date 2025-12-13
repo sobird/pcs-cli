@@ -1,89 +1,88 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/naming-convention */
 import { existsSync } from 'fs';
-import { type Command } from 'commander';
+
+import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
-import prompts, { PromptObject } from 'prompts';
 import dayjs from 'dayjs';
 import open from 'open';
+import prompts, { PromptObject } from 'prompts';
+import PcsService from 'services/pcs';
 import {
   fileJSON, log, JSON_TMP, EXPIRES_IN,
 } from 'utils';
-import PcsService from 'services/pcs';
 
-export default (program: Command) => {
-  program.command('init')
-    .description('initialize baidu pcs')
-    .option('-n, --name <string>', 'app name')
-    .option('-k, --key <string>', 'app key')
-    .option('-s, --secret <string>', 'app secret')
-    .action(async (options) => {
-      // 如果token存在且没有过期, 则提示用户是否要继续初始化
-      const tokenJson = fileJSON('TOKEN');
-      if (tokenJson && tokenJson.access_token) {
-        log(`Your access token has not expired (expiration date: ${dayjs(tokenJson.expires_time).format('YYYY-MM-DD HH:mm:ss')}).`);
-        const { value } = await prompts({
-          type: 'confirm',
-          name: 'value',
-          message: 'Do you want to continue initializing?',
-          initial: false,
-        });
-
-        if (!value) {
-          return;
-        }
-      }
-
-      // 如果 user_code 存在且没有过期，提示用户是否要用当前app信息生成token
-      const deviceJson = fileJSON('DEVICE');
-      if (deviceJson) {
-        await getAccessTokenByDevice(deviceJson);
-        return;
-      }
-
-      const asks: PromptObject[] = [];
-      ['name', 'key', 'secret'].forEach((item) => {
-        if (!options[item]) {
-          asks.push({
-            type: 'text',
-            name: item,
-            message: `Please enter baidu app ${item}`,
-          });
-        }
+export const initCommand = new Command('init')
+  .description('initialize baidu pcs')
+  .option('-n, --name <string>', 'app name')
+  .option('-k, --key <string>', 'app key')
+  .option('-s, --secret <string>', 'app secret')
+  .action(async (options) => {
+    // 如果token存在且没有过期, 则提示用户是否要继续初始化
+    const tokenJson = fileJSON('TOKEN');
+    if (tokenJson && tokenJson.access_token) {
+      log(`Your access token has not expired (expiration date: ${dayjs(tokenJson.expires_time).format('YYYY-MM-DD HH:mm:ss')}).`);
+      const { value } = await prompts({
+        type: 'confirm',
+        name: 'value',
+        message: 'Do you want to continue initializing?',
+        initial: false,
       });
-      const asksRes = await prompts(asks);
-      const pcsInfo = {
-        ...options,
-        ...asksRes,
-      };
 
-      // 如果 appName和appKey未设置则返回
-      if (!['name', 'key'].every((item) => { return pcsInfo[item]; })) {
+      if (!value) {
         return;
       }
+    }
 
-      let confirm = true;
+    // 如果 user_code 存在且没有过期，提示用户是否要用当前app信息生成token
+    const deviceJson = fileJSON('DEVICE');
+    if (deviceJson) {
+      await getAccessTokenByDevice(deviceJson);
+      return;
+    }
 
-      // 如果存在则提示 是否覆盖
-      if (existsSync(JSON_TMP.APP)) {
-        const { value } = await prompts({
-          type: 'confirm',
-          name: 'value',
-          message: 'Baidu pcs initialization will be begin. If you have already configured before, your old settings will be overwritten. Can you confirm?',
-          initial: false,
+    const asks: PromptObject[] = [];
+    ['name', 'key', 'secret'].forEach((item) => {
+      if (!options[item]) {
+        asks.push({
+          type: 'text',
+          name: item,
+          message: `Please enter baidu app ${item}`,
         });
-        confirm = value;
       }
-
-      if (!confirm) {
-        return;
-      }
-      // 覆盖写入pcs app配置
-      fileJSON('APP', pcsInfo);
-
-      await getAccessToken();
     });
-};
+    const asksRes = await prompts(asks);
+    const pcsInfo = {
+      ...options,
+      ...asksRes,
+    };
+
+    // 如果 appName和appKey未设置则返回
+    if (!['name', 'key'].every((item) => { return pcsInfo[item]; })) {
+      return;
+    }
+
+    let confirm = true;
+
+    // 如果存在则提示 是否覆盖
+    if (existsSync(JSON_TMP.APP)) {
+      const { value } = await prompts({
+        type: 'confirm',
+        name: 'value',
+        message: 'Baidu pcs initialization will be begin. If you have already configured before, your old settings will be overwritten. Can you confirm?',
+        initial: false,
+      });
+      confirm = value;
+    }
+
+    if (!confirm) {
+      return;
+    }
+    // 覆盖写入pcs app配置
+    fileJSON('APP', pcsInfo);
+
+    await getAccessToken();
+  });
 
 /** 获取 access token by conf file */
 async function getAccessToken() {

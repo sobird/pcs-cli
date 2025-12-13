@@ -19,7 +19,9 @@ import {
 
 import chalk from 'chalk';
 
-import { name } from '../package.json';
+import { name } from '@/package.json';
+
+export { link } from './link';
 
 const TMP = resolve(os.homedir(), `.${name}`);
 export const JSON_TMP = {
