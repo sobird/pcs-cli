@@ -7,7 +7,15 @@ import {
 } from 'utils';
 
 import {
-  initCommand, deleteCommand, downloadCommand, fetchCommand, listCommand, metaCommand, quotaCommand, refreshCommand, uploadCommand,
+  initCommand,
+  deleteCommand,
+  downloadCommand,
+  fetchCommand,
+  listCommand,
+  metaCommand,
+  quotaCommand,
+  refreshCommand,
+  uploadCommand,
 } from '@/command';
 import { name, version } from '@/package.json' with { type: 'json' };
 
@@ -18,6 +26,7 @@ program
   .description(`Baidu Personal Cloud Storage Scaffold.\n\nYou can get app key by visit ${(link(CREATE_APP_URL, CREATE_APP_URL))}.\nIf you have already created an app, you can visit ${chalk.blue.underline(APP_LIST_URL)} and get it in your app's info.`)
   .version(version);
 
+// 获取APP在本地存储的token信息
 program.hook('preAction', (command, actionCommand) => {
   const tokenOption = actionCommand.options.find((option) => { return option.long === '--token'; });
   if (tokenOption) {
@@ -32,7 +41,6 @@ program.hook('preAction', (command, actionCommand) => {
       return tokenJson[item] && actionCommand.setOptionValue(item, tokenJson[item]);
     });
   }
-  // throw 'test';
 });
 
 program

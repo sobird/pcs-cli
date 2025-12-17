@@ -101,7 +101,7 @@ const PcsService = {
     });
   },
 
-  listFile(path: string, access_token: string) {
+  listFile(access_token: string, path: string) {
     return axios.get<unknown, ListFileResponse>('/pcs/file', {
       params: {
         method: 'list',
@@ -194,7 +194,7 @@ const PcsService = {
     });
   },
   /** 删除文件 */
-  delete(path: string, access_token: string) {
+  delete(access_token: string, path: string) {
     return axios.get('/pcs/file', {
       params: {
         method: 'delete',

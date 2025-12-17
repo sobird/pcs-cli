@@ -3,7 +3,8 @@ import { sep } from 'path';
 import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import PcsService from 'services/pcs';
-import { log, toRemotePath } from 'utils';
+
+import { log, toRemotePath } from '@/utils';
 
 export const fetchCommand = new Command('fetch')
   .description('fetch source to remote')
@@ -14,7 +15,7 @@ export const fetchCommand = new Command('fetch')
     const remoteFilename = toRemotePath(remote);
 
     try {
-      await PcsService.fetch(options.token as string, source, remoteFilename);
+      await PcsService.fetch(source, remoteFilename, options.token as string);
     } catch (err: any) {
       const {
         response: { data },

@@ -9,12 +9,11 @@ import {
   writeFile,
   writeFileSync,
   existsSync,
-  stat,
   statSync,
 } from 'fs';
 import os from 'os';
 import {
-  dirname, join, basename, resolve,
+  dirname, join, resolve,
 } from 'path';
 
 import chalk from 'chalk';
@@ -22,6 +21,7 @@ import chalk from 'chalk';
 import { name } from '@/package.json';
 
 export { link } from './link';
+export { splitFile } from './splitFile';
 
 const TMP = resolve(os.homedir(), `.${name}`);
 export const JSON_TMP = {
@@ -142,54 +142,4 @@ export function toLocalPath(path: string) {
   }
 
   return path;
-}
-
-export function splitFile(path: string, bytes: number, temp: string) {
-  let partNum = 0;
-  const parts: string[] = [];
-  function copy(start: number, end: number, size: number) {
-    return new Promise((PromiseResolve, reject) => {
-      if (start >= size) {
-        PromiseResolve(undefined);
-      } else {
-        if (end > size - 1) {
-          end = size - 1;
-        }
-        const readStream = createReadStream(path, { start, end });
-        let data = Buffer.from([]);
-        readStream.on('data', (chunk) => {
-          data = Buffer.concat([data, chunk]);
-        });
-        readStream.on('end', async () => {
-          const partPath = join(temp, `${basename(path)}.${partNum + 1}`);
-          mkdirSync(dirname(partPath), { recursive: true });
-          writeFile(partPath, data, async (err) => {
-            if (err) {
-              reject(err);
-            }
-            parts.push(partPath);
-            partNum += 1;
-            start = end + 1;
-            end += bytes;
-            await copy(start, end, size);
-            PromiseResolve(undefined);
-          });
-        });
-        readStream.on('err', (err) => {
-          reject(err);
-        });
-      }
-    });
-  }
-  return new Promise((PromiseResolve, reject) => {
-    stat(path, async (err, res) => {
-      if (err) {
-        return reject(err);
-      }
-
-      const { size } = res;
-      await copy(0, bytes - 1, size);
-      return PromiseResolve(parts);
-    });
-  });
 }

@@ -11,7 +11,7 @@ export const metaCommand = new Command('meta')
   .option('-t --token [token]', 'access token')
   .action(async (path, options) => {
     try {
-      const { list } = await PcsService.getMeta(options.token as string, toRemotePath(path));
+      const { list } = await PcsService.getMeta(toRemotePath(path), options.token as string);
       console.log(list[0]);
     } catch (err: any) {
       const { response: { data } } = err;
