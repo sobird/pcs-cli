@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-param-reassign */
 import { existsSync } from 'fs';
 
 import { Command } from '@commander-js/extra-typings';
@@ -9,79 +8,112 @@ import open from 'open';
 import prompts, { PromptObject } from 'prompts';
 import PcsService from 'services/pcs';
 import {
-  fileJSON, log, JSON_TMP, EXPIRES_IN,
+  fileJSON, log, JSON_TMP, EXPIRES_IN, link,
 } from 'utils';
+
+import { DeviceCodeGrant } from '@/services/auth';
+import { PCS_CONF } from '@/utils/constants';
+import { writeJSON } from '@/utils/json';
+
+async function getAccessTokenByDeviceCode(options: ReturnType<typeof initCommand.opts>) {
+  const oauth = new DeviceCodeGrant({
+    clientId: options.key!,
+    clientSecret: options.secret!,
+    scope: 'basic,netdisk',
+  });
+
+  const deviceCode = await oauth.getDeviceCode();
+  const authorizeURL = oauth.getAuthorizeURL(deviceCode);
+
+  log('Launch your favorite web browser and visit: ');
+  log(link(authorizeURL, authorizeURL));
+  log(`Input ${chalk.bold.red(deviceCode.user_code)} as the user code if asked.`);
+  log('After granting access to the application, come back here and ');
+
+  await open(authorizeURL);
+
+  const { confirm } = await prompts({
+    type: 'confirm',
+    name: 'confirm',
+    message: 'Press Enter to continue',
+    initial: true,
+  });
+
+  if (confirm) {
+    const oauthTokenResponse = await oauth.authorize(deviceCode.device_code);
+    log('Successfully initialized', chalk.green);
+    log(`access_token: ${chalk.yellowBright(oauthTokenResponse.access_token)}`);
+    log(`refresh_token: ${chalk.yellowBright(oauthTokenResponse.refresh_token)}`);
+
+    return oauthTokenResponse;
+  }
+}
 
 export const initCommand = new Command('init')
   .description('initialize baidu pcs')
-  .option('-n, --name <string>', 'app name')
+  .option('-i, --id <string>', 'app id')
   .option('-k, --key <string>', 'app key')
   .option('-s, --secret <string>', 'app secret')
   .action(async (options) => {
-    // 如果token存在且没有过期, 则提示用户是否要继续初始化
-    const tokenJson = fileJSON('TOKEN');
-    if (tokenJson && tokenJson.access_token) {
-      log(`Your access token has not expired (expiration date: ${dayjs(tokenJson.expires_time).format('YYYY-MM-DD HH:mm:ss')}).`);
-      const { value } = await prompts({
+    // 如果存在 则提示是否覆盖
+    if (existsSync(PCS_CONF)) {
+      const { confirm } = await prompts({
         type: 'confirm',
-        name: 'value',
-        message: 'Do you want to continue initializing?',
+        name: 'confirm',
+        message: 'Baidu pcs initialization will be begin. If you have already configured before, your old settings will be overwritten. Can you confirm?',
         initial: false,
       });
-
-      if (!value) {
+      if (!confirm) {
         return;
       }
     }
 
-    // 如果 user_code 存在且没有过期，提示用户是否要用当前app信息生成token
-    const deviceJson = fileJSON('DEVICE');
-    if (deviceJson) {
-      await getAccessTokenByDevice(deviceJson);
-      return;
-    }
-
-    const asks: PromptObject[] = [];
-    ['name', 'key', 'secret'].forEach((item) => {
+    // 设备码模式授权
+    const questions: PromptObject[] = [];
+    (['id', 'key', 'secret'] as const).forEach((item) => {
       if (!options[item]) {
-        asks.push({
+        questions.push({
           type: 'text',
           name: item,
           message: `Please enter baidu app ${item}`,
         });
       }
     });
-    const asksRes = await prompts(asks);
-    const pcsInfo = {
-      ...options,
-      ...asksRes,
-    };
-
-    // 如果 appName和appKey未设置则返回
-    if (!['name', 'key'].every((item) => { return pcsInfo[item]; })) {
+    options = { ...options, ...await prompts(questions) };
+    if (!options.key || !options.secret) {
       return;
     }
 
-    let confirm = true;
+    // 如果token存在且没有过期, 则提示用户是否要继续初始化
+    // const tokenJson = fileJSON('TOKEN');
+    // if (tokenJson && tokenJson.access_token) {
+    //   log(`Your access token has not expired (expiration date: ${dayjs(tokenJson.expires_time).format('YYYY-MM-DD HH:mm:ss')}).`);
+    //   const { value } = await prompts({
+    //     type: 'confirm',
+    //     name: 'value',
+    //     message: 'Do you want to continue initializing?',
+    //     initial: false,
+    //   });
 
-    // 如果存在则提示 是否覆盖
-    if (existsSync(JSON_TMP.APP)) {
-      const { value } = await prompts({
-        type: 'confirm',
-        name: 'value',
-        message: 'Baidu pcs initialization will be begin. If you have already configured before, your old settings will be overwritten. Can you confirm?',
-        initial: false,
-      });
-      confirm = value;
-    }
+    //   if (!value) {
+    //     return;
+    //   }
+    // }
 
-    if (!confirm) {
+    // // 如果 user_code 存在且没有过期，提示用户是否要用当前app信息生成token
+    // const deviceJson = fileJSON('DEVICE');
+    // if (deviceJson) {
+    //   await getAccessTokenByDeviceCode(deviceJson);
+    //   return;
+    // }
+
+    const token = await getAccessTokenByDeviceCode(options);
+    if (!token) {
       return;
     }
-    // 覆盖写入pcs app配置
-    fileJSON('APP', pcsInfo);
 
-    await getAccessToken();
+    // 保存配置
+    await writeJSON(PCS_CONF, { ...options, ...token });
   });
 
 /** 获取 access token by conf file */
@@ -130,37 +162,5 @@ async function getAccessToken() {
         secret,
       });
     }
-  }
-}
-
-async function getAccessTokenByDevice(deviceInfo: any) {
-  const {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    verification_url, user_code, device_code, key, secret,
-  } = deviceInfo;
-  await open(`${verification_url}?code=${user_code}`);
-
-  log('Launch your favorite web browser and visit: ');
-  log(verification_url, chalk.blue.underline);
-  log(`Input ${chalk.bold.red(user_code)} as the user code if asked.`);
-  log('After granting access to the application, come back here and ');
-
-  const { confirm } = await prompts({
-    type: 'confirm',
-    name: 'confirm',
-    message: 'Press Enter to continue',
-    initial: true,
-  });
-
-  if (confirm) {
-    const oauthTokenResponse = await PcsService.oauthToken(key, secret, device_code);
-    fileJSON('TOKEN', {
-      ...oauthTokenResponse,
-      key,
-      secret,
-    });
-    log('Successfully initialized', chalk.green);
-    log(`access_token: ${chalk.yellowBright(oauthTokenResponse.access_token)}`);
-    log(`refresh_token: ${chalk.yellowBright(oauthTokenResponse.refresh_token)}`);
   }
 }

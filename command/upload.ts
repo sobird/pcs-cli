@@ -13,18 +13,22 @@ export const uploadCommand = new Command('upload')
   .argument('[pattern]', 'glob pattern', '*')
   .argument('[remote]', 'remote path', sep)
   .option('-t --token [token]', 'access token')
-  .option('-b --bytes [size]', 'Split upload bytes size')
+  .option('-b --bytes <number>', 'Split upload bytes size', Number, 1073741824)
   .option('--thread', 'Thread')
   .action(async (pattern, remote, options) => {
     const files = await glob(pattern, {
       nodir: true,
     });
-    const bytes = options.bytes === true ? 1073741824 : parseInt(options.bytes, 10);
+    const { bytes } = options;
+    console.log('options', options);
+    console.log('bytes', bytes);
+
     const temp = join(os.tmpdir(), 'pcs-cli');
     try {
       // 串行上传
       files.reduce(async (previousValue, currentValue) => {
-        await previousValue;
+        const res = await previousValue;
+        console.log('res', res);
         const fileStat = statSync(currentValue);
 
         if (Number.isInteger(bytes) && fileStat.size > bytes) {
@@ -37,6 +41,7 @@ export const uploadCommand = new Command('upload')
             //
             // eslint-disable-next-line no-await-in-loop
             const { md5 } = await PcsService.upload2(options.token, piece, '', 'overwrite', 'tmpfile') as any;
+            console.log('md5', md5);
             blocks.push(md5);
           }
           const param = {

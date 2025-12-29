@@ -7,8 +7,9 @@ import fs from 'fs';
 import https from 'https';
 import { dirname } from 'path';
 
+import axios, { AxiosInstance } from 'axios';
 import Progress from 'progress';
-import axios, { InternalHttpRequestConfig } from 'utils/axios';
+// import axios, { InternalHttpRequestConfig } from 'utils/axios';
 
 interface OauthDeviceResponse {
   device_code: string;
@@ -28,10 +29,67 @@ interface OauthTokenResponse {
   scope: string;
 }
 
-interface QuotaResponse {
+export interface PCSNode {
+  app_id: number;
+  black_tag: number;
+  category: number;
+  ctime: number;
+  from_type: number;
+  fs_id: number;
+  isdelete: number;
+  isdir: 0 | 1;
+  local_ctime: number;
+  local_mtime: number;
+  mtime: number;
+  oper_id: number;
+  owner_id: number;
+  owner_type: number;
+  path: string;
+  real_category: string;
+  server_ctime: number;
+  server_filename: string;
+  server_mtime: number;
+  share: 0;
+  size: number;
+  status: number;
+  tkbind_id: number;
+  user_id: number;
+  wpfile: number;
+}
+
+export interface PCSFile extends PCSNode {
+  extent_int2: number;
+  extent_int8: number;
+  extent_tinyint7: number;
+  is_scene: number;
+  pl: number;
+  server_atime: number;
+  unlist: number;
+}
+
+export interface PCSMeta extends PCSNode {
+  extent_int3: number;
+  extent_int8: number;
+  extent_tinyint1: number;
+  extent_tinyint2: number;
+  extent_tinyint3: number;
+  extent_tinyint4: number;
+  ifhassubdir: 0 | 1;
+  privacy: 0 | 1;
+  source: 0 | 1;
+  videotag: number;
+}
+
+interface PCSQuotaResponse {
   quota: number;
   request_id: number;
   used: number;
+  file_tag: number;
+}
+
+interface PCSMetaResponse {
+  list: [PCSMeta]
+  request_id: number;
 }
 
 interface PcsFile {
@@ -43,7 +101,7 @@ interface PcsFile {
   path: string;
 }
 
-interface ListFileResponse {
+interface PCSListResponse {
   list: PcsFile[],
   request_id: number;
 }
@@ -78,68 +136,6 @@ const PcsService = {
         refresh_token,
         grant_type: 'refresh_token',
       },
-    });
-  },
-
-  /** 查询容量信息 */
-  quotaInfo(access_token: string) {
-    return axios.get<unknown, QuotaResponse>('/pcs/quota', {
-      params: {
-        method: 'info',
-        access_token,
-      },
-    });
-  },
-
-  getMeta(access_token: string, path: string) {
-    return axios.get<unknown>('/pcs/file', {
-      params: {
-        method: 'meta',
-        access_token,
-        path,
-      },
-    });
-  },
-
-  listFile(access_token: string, path: string) {
-    return axios.get<unknown, ListFileResponse>('/pcs/file', {
-      params: {
-        method: 'list',
-        access_token,
-        path,
-      },
-    });
-  },
-
-  async download(access_token: string, path: string, local: string) {
-    fs.mkdirSync(dirname(local), { recursive: true });
-    const writer = fs.createWriteStream(local);
-    const { data, headers } = await axios.get('/pcs/file', {
-      params: {
-        method: 'download',
-        access_token,
-        path,
-      },
-      responseType: 'stream',
-      responseParser: (response) => { return response; },
-    } as InternalHttpRequestConfig);
-
-    const totalLength = headers['content-length'];
-
-    const progressBar = new Progress(' downloading [:bar] :rate/bps :percent :etas', {
-      complete: '=',
-      incomplete: ' ',
-      width: 40,
-      // renderThrottle: 1,
-      total: parseInt(totalLength, 10),
-    });
-
-    data.on('data', (chunk: Buffer) => { return progressBar.tick(chunk.length); });
-    data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
     });
   },
 
@@ -229,3 +225,104 @@ const PcsService = {
 };
 
 export default PcsService;
+
+export class PCSClient {
+  protected axios: AxiosInstance;
+
+  constructor(public name: string, public token: string) {
+    this.axios = axios.create({
+      timeout: 10000,
+      baseURL: 'https://pcs.baidu.com/rest/2.0',
+    });
+  }
+
+  /**
+   * 查询容量信息
+   *
+   * @param access_token
+   * @returns
+   */
+  async quota() {
+    const { data } = await this.axios.get<PCSQuotaResponse>('/pcs/quota', {
+      params: {
+        method: 'info',
+        access_token: this.token,
+      },
+    });
+    return data;
+  }
+
+  /**
+   * 查询文件信息
+   *
+   * @param access_token
+   * @param path
+   * @returns
+   */
+  async meta(path: string) {
+    const { data } = await this.axios.get<PCSMetaResponse>('/pcs/file', {
+      params: {
+        method: 'meta',
+        access_token: this.token,
+        path,
+      },
+    });
+
+    return data;
+  }
+
+  /**
+   * 获取文件列表
+   *
+   * @param path
+   * @returns
+   */
+  async list(path: string) {
+    const { data } = await this.axios.get<PCSListResponse>('/pcs/file', {
+      params: {
+        method: 'list',
+        access_token: this.token,
+        path,
+      },
+    });
+    return data;
+  }
+
+  /**
+   * 下载指定的文件
+   *
+   * @param path
+   * @param local
+   * @returns
+   */
+  async download(path: string, local: string) {
+    fs.mkdirSync(dirname(local), { recursive: true });
+    const writer = fs.createWriteStream(local);
+    const { data, headers } = await this.axios.get('/pcs/file', {
+      params: {
+        method: 'download',
+        access_token: this.token,
+        path,
+      },
+      responseType: 'stream',
+    });
+
+    const totalLength = headers['content-length'];
+
+    const progressBar = new Progress(' downloading [:bar] :rate/bps :percent :etas', {
+      complete: '=',
+      incomplete: ' ',
+      width: 40,
+      // renderThrottle: 1,
+      total: parseInt(totalLength, 10),
+    });
+
+    data.on('data', (chunk: Buffer) => { return progressBar.tick(chunk.length); });
+    data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
+    });
+  }
+}

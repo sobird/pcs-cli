@@ -1,6 +1,7 @@
 import { sep } from 'path';
 
 import { Command } from '@commander-js/extra-typings';
+import axios from 'axios';
 import bytes from 'bytes';
 import chalk from 'chalk';
 import cliui from 'cliui';
@@ -14,6 +15,18 @@ export const listCommand = new Command('list')
   .alias('ll')
   .option('-t --token [token]', 'access token')
   .action(async (path, options) => {
+    console.log('options', options);
+
+    const data = await axios.get('/pcs/file', {
+      params: {
+        method: 'list',
+        access_token: options.token,
+        path,
+      },
+    });
+    console.log('data', data);
+    return;
+
     try {
       const ui = cliui({} as any);
 

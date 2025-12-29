@@ -18,30 +18,49 @@ import {
   uploadCommand,
 } from '@/command';
 import { name, version } from '@/package.json' with { type: 'json' };
+import { PCS_CONF } from '@/utils/constants';
+import { readJSON } from '@/utils/json';
 
-const program = new Command();
-
-program
-  .name(name)
+const program = new Command(name)
+  // .name(name)
   .description(`Baidu Personal Cloud Storage Scaffold.\n\nYou can get app key by visit ${(link(CREATE_APP_URL, CREATE_APP_URL))}.\nIf you have already created an app, you can visit ${chalk.blue.underline(APP_LIST_URL)} and get it in your app's info.`)
-  .version(version);
-
-// 获取APP在本地存储的token信息
-program.hook('preAction', (command, actionCommand) => {
-  const tokenOption = actionCommand.options.find((option) => { return option.long === '--token'; });
-  if (tokenOption) {
-    const tokenJson = fileJSON('TOKEN');
-    if (!tokenJson || !tokenJson.access_token) {
-      log('Your access token does not exist or has expired', chalk.red);
-      process.exit(1);
+  .version(version)
+  .hook('preAction', async (thisCommand, actionCommand) => {
+    const actionCommandName = actionCommand.name();
+    if (actionCommandName === 'init') {
+      return;
     }
 
-    actionCommand.setOptionValue('token', tokenOption.defaultValue || tokenJson.access_token);
-    ['key', 'secret', 'refresh_token'].map((item) => {
-      return tokenJson[item] && actionCommand.setOptionValue(item, tokenJson[item]);
-    });
-  }
-});
+    try {
+      const config = await readJSON(PCS_CONF);
+      if (actionCommandName === 'refresh') {
+        actionCommand.setOptionValue('key', actionCommand.getOptionValue('key') || config.key);
+        actionCommand.setOptionValue('secret', actionCommand.getOptionValue('secret') || config.secret);
+        actionCommand.setOptionValue('refreshToken', actionCommand.getOptionValue('refreshToken') || config.refresh_token);
+      } else {
+        actionCommand.setOptionValue('key', actionCommand.getOptionValue('key') || config.key);
+        actionCommand.setOptionValue('token', actionCommand.getOptionValue('token') || config.access_token);
+      }
+    } catch (err) {
+      //
+    }
+
+    console.log('actionCommand', actionCommand.name(), actionCommand.getOptionValue('secret'));
+    return;
+    const tokenOption = actionCommand.options.find((option) => { return option.long === '--token'; });
+    if (tokenOption) {
+      const tokenJson = fileJSON('TOKEN');
+      if (!tokenJson || !tokenJson.access_token) {
+        log('Your access token does not exist or has expired', chalk.red);
+        process.exit(1);
+      }
+
+      actionCommand.setOptionValue('token', tokenOption.defaultValue || tokenJson.access_token);
+      ['key', 'secret', 'refresh_token'].map((item) => {
+        return tokenJson[item] && actionCommand.setOptionValue(item, tokenJson[item]);
+      });
+    }
+  });
 
 program
   .addCommand(initCommand)

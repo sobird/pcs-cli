@@ -6,17 +6,7 @@
  * sobird<i@sobird.me> at 2021/02/20 11:18:13 created.
  */
 
-import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-
-export type ResponseParser<T = unknown> = (response: AxiosResponse) => T;
-
-export interface InternalHttpRequestConfig<T = unknown> extends InternalAxiosRequestConfig<T> {
-  responseParser?: ResponseParser;
-}
-
-interface HttpResponse<T = unknown, D = unknown> extends AxiosResponse<T, D> {
-  config: InternalHttpRequestConfig<D>;
-}
+import axios, { AxiosError } from 'axios';
 
 /**
  * 全局的 axios 默认值，所有新建的Axios实例将继承此处的设置
@@ -30,26 +20,20 @@ axios.defaults.timeout = 10 * 1000;
 // 全局默认的baseURL参数配置
 axios.defaults.baseURL = 'https://pcs.baidu.com/rest/2.0';
 
-// axios.defaults.headers.common['Request-Source'] = 2;
-// ssoid
-// axios.defaults.headers.common['access-token'] = SSO_ACCESS_TOKEN;
-// axios.defaults.headers.common['client-id'] = SSO_CLIENT_ID;
-
 // 请求拦截器
 axios.interceptors.request.use(
-  (config: InternalHttpRequestConfig) => {
+  (config) => {
     return config;
   },
-  (error: AxiosError) => {
+  (error) => {
     return Promise.reject(error);
   },
 );
 
 // 响应拦截器
 axios.interceptors.response.use(
-  (response: HttpResponse) => {
-    const { config, data } = response;
-    return config.responseParser ? config.responseParser(response) : data;
+  (response) => {
+    return response;
   },
   (error: AxiosError) => {
     const { request, response } = error;
