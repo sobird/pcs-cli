@@ -3,6 +3,9 @@ name: Publish package to NPM
 on:
   workflow_call:
 
+permissions:
+  id-token: write  # Required for OIDC
+
 jobs:
   publish:
     name: Publish package to NPM
@@ -51,5 +54,4 @@ jobs:
         run: |
           npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
           NPM_CONFIG_PROVENANCE: true
