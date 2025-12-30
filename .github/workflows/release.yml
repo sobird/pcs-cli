@@ -16,7 +16,7 @@ jobs:
     outputs:
       release-published: ${{ steps.release.outputs.release_created }}
     steps:
-      - name: Release Please
+      - name: Release please
         uses: googleapis/release-please-action@v4
         id: release
         with:
