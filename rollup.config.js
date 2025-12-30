@@ -13,12 +13,13 @@ import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
+import typescript from '@rollup/plugin-typescript';
 import { glob } from 'glob';
 import { defineConfig } from 'rollup';
 import clear from 'rollup-plugin-clear';
 import copy from 'rollup-plugin-copy';
 import external from 'rollup-plugin-peer-deps-external';
-import typescript from 'rollup-plugin-typescript2';
+
 // import mdx from '@mdx-js/rollup';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -53,19 +54,12 @@ export default (env) => {
           preferBuiltins: true,
         }),
         commonjs(),
+        typescript(),
+        terser(),
         json({
           namedExports: true, // 支持具名导出 name、version
           compact: true,
         }),
-        typescript({
-          check: false,
-          // declaration: true,
-          // tsconfig: "./src/tsconfig.json",
-          // noEmitOnError: false,
-          strictRequires: true,
-        }),
-        // terser(),
-
         copy({
           targets: [
             { src: 'package.json', dest: DIST },
