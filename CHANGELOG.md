@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sobird/pcs-cli/compare/v1.2.0...v1.2.1) (2025-12-30)
+
+
+### Bug Fixes
+
+* publish workflows Set up pnpm need before Set up Node.js ([5551a74](https://github.com/sobird/pcs-cli/commit/5551a741d6ef22037ae56f40b53a589f447bdc53))
+
 ## [1.2.0](https://github.com/sobird/pcs-cli/compare/v1.1.0...v1.2.0) (2025-12-30)
 
 
