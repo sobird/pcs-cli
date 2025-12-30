@@ -5,7 +5,8 @@ import { join, sep } from 'path';
 import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import { glob } from 'glob';
-import { log, toRemotePath, splitFile } from 'utils';
+
+import { splitFile } from '@/utils';
 
 export const uploadCommand = new Command('upload')
   .description('upload local file')
@@ -44,10 +45,10 @@ export const uploadCommand = new Command('upload')
           const param = {
             block_list: blocks,
           };
-          return pcs.createSuperFile(toRemotePath(join(remote, currentValue)), param) as unknown as Promise<void>;
+          return pcs.createSuperFile(join(remote, currentValue), param) as unknown as Promise<void>;
         }
-        log(`${chalk.blueBright('==>')} Uploading ${currentValue}`);
-        return pcs.upload(currentValue, toRemotePath(join(remote, currentValue))) as Promise<void>;
+        console.log(`${chalk.blueBright('==>')} Uploading ${currentValue}`);
+        return pcs.upload(currentValue, join(remote, currentValue)) as Promise<void>;
       }, Promise.resolve());
 
       // todo

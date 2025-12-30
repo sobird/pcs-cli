@@ -2,7 +2,6 @@ import { Command } from '@commander-js/extra-typings';
 import bytes from 'bytes';
 import chalk from 'chalk';
 import Progress from 'progress';
-import { log } from 'utils';
 
 export const quotaCommand = new Command('quota')
   .description('check your pcs status')
@@ -22,9 +21,9 @@ export const quotaCommand = new Command('quota')
         used: bytes(used),
         quota: bytes(quota),
       });
-      log('');
+      console.log('');
     } catch (err: any) {
       const { response: { data } } = err;
-      log(`error code ${data.error_code} : ${data.error_msg}`, chalk.red);
+      console.log(chalk.red`error code ${data.error_code} : ${data.error_msg}`);
     }
   });

@@ -2,9 +2,6 @@
 
 import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
-import {
-  CREATE_APP_URL, APP_LIST_URL, link,
-} from 'utils';
 
 import {
   initCommand,
@@ -18,7 +15,8 @@ import {
   uploadCommand,
 } from '@/command';
 import { PCSClient } from '@/services/pcs';
-import { PCS_CONF } from '@/utils/constants';
+import { link } from '@/utils';
+import { PCS_CONF, CREATE_APP_URL, APP_LIST_URL } from '@/utils/constants';
 import { readJSON } from '@/utils/json';
 
 import { name, version } from '../package.json';

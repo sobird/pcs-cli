@@ -8,8 +8,8 @@ import open from 'open';
 import prompts, { PromptObject } from 'prompts';
 
 import { DeviceCodeGrant, ImplicitGrant } from '@/services/auth';
-import { EXPIRES_IN, link } from '@/utils';
-import { PCS_CONF } from '@/utils/constants';
+import { link } from '@/utils';
+import { PCS_CONF, TOKEN_EXPIRES_IN } from '@/utils/constants';
 import { writeJSON } from '@/utils/json';
 
 /** 获取 access token by conf file */
@@ -38,7 +38,7 @@ export async function getAccessToken(options: ReturnType<typeof initCommand.opts
 
   if (access_token) {
     const expireSecond = (Date.now() - accessTokenCreateTime) / 1000;
-    const expires_in = EXPIRES_IN - expireSecond;
+    const expires_in = TOKEN_EXPIRES_IN - expireSecond;
 
     // 保存配置
     await writeJSON(PCS_CONF, { ...options, access_token, expires_in });
