@@ -3,7 +3,7 @@
 import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import {
-  CREATE_APP_URL, APP_LIST_URL, log, fileJSON, link,
+  CREATE_APP_URL, APP_LIST_URL, link,
 } from 'utils';
 
 import {
@@ -18,8 +18,15 @@ import {
   uploadCommand,
 } from '@/command';
 import { name, version } from '@/package.json' with { type: 'json' };
+import { PCSClient } from '@/services/pcs';
 import { PCS_CONF } from '@/utils/constants';
 import { readJSON } from '@/utils/json';
+
+declare module '@commander-js/extra-typings' {
+  interface Command {
+    pcs: PCSClient;
+  }
+}
 
 const program = new Command(name)
   // .name(name)
@@ -38,27 +45,11 @@ const program = new Command(name)
         actionCommand.setOptionValue('secret', actionCommand.getOptionValue('secret') || config.secret);
         actionCommand.setOptionValue('refreshToken', actionCommand.getOptionValue('refreshToken') || config.refresh_token);
       } else {
-        actionCommand.setOptionValue('key', actionCommand.getOptionValue('key') || config.key);
-        actionCommand.setOptionValue('token', actionCommand.getOptionValue('token') || config.access_token);
+        // eslint-disable-next-line no-param-reassign
+        actionCommand.pcs = new PCSClient(actionCommand.getOptionValue('name') || config.name, actionCommand.getOptionValue('token') || config.access_token);
       }
     } catch (err) {
       //
-    }
-
-    console.log('actionCommand', actionCommand.name(), actionCommand.getOptionValue('secret'));
-    return;
-    const tokenOption = actionCommand.options.find((option) => { return option.long === '--token'; });
-    if (tokenOption) {
-      const tokenJson = fileJSON('TOKEN');
-      if (!tokenJson || !tokenJson.access_token) {
-        log('Your access token does not exist or has expired', chalk.red);
-        process.exit(1);
-      }
-
-      actionCommand.setOptionValue('token', tokenOption.defaultValue || tokenJson.access_token);
-      ['key', 'secret', 'refresh_token'].map((item) => {
-        return tokenJson[item] && actionCommand.setOptionValue(item, tokenJson[item]);
-      });
     }
   });
 

@@ -8,6 +8,7 @@
  * sobird<i@sobird.me> at 2025/12/21 9:54:50 created.
  */
 
+/* eslint-disable @typescript-eslint/naming-convention */
 import axios, { AxiosInstance } from 'axios';
 
 // OAuth客户端配置
@@ -15,26 +16,26 @@ export interface OAuthClientConfig {
   /**
    * 固定值，值必须为device_code。
    */
-  responseType: 'code' | 'token' | 'device_code';
+  response_type: 'code' | 'token' | 'device_code';
   /**
    * 您应用的AppKey。
    */
-  clientId: string;
+  client_id: string;
 
   /**
    * 您应用的AppSecret
    */
-  clientSecret: string;
+  client_secret: string;
 
   /**
    * 授权后要回调的地址URL
    */
-  redirectURL: 'oob' | string;
+  redirect_uri?: 'oob' | string;
 
   /**
    * 固定值，值必须为basic,netdisk。
    */
-  scope: 'basic,netdisk';
+  scope?: 'basic,netdisk';
 }
 
 // 令牌响应
@@ -82,6 +83,10 @@ export abstract class BaseOAuthClient {
   protected axios: AxiosInstance;
 
   constructor(public config: OAuthClientConfig) {
+    this.config = {
+      scope: 'basic,netdisk',
+      ...config,
+    };
     this.axios = axios.create({ timeout: 10000 });
   }
 
@@ -123,15 +128,16 @@ export abstract class BaseOAuthClient {
    * @param refreshToken
    */
   async refreshToken(refresh_token: string) {
+    const { client_secret, client_id } = this.config;
+
     const { data } = await axios.get<RefreshTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {
       params: {
         grant_type: 'refresh_token',
-        client_id: this.config.clientId,
-        client_secret: this.config.clientSecret,
+        client_id,
+        client_secret,
         refresh_token,
       },
     });
-
     return data;
   }
 }

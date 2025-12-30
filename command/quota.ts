@@ -2,15 +2,16 @@ import { Command } from '@commander-js/extra-typings';
 import bytes from 'bytes';
 import chalk from 'chalk';
 import Progress from 'progress';
-import PcsService from 'services/pcs';
 import { log } from 'utils';
 
 export const quotaCommand = new Command('quota')
   .description('check your pcs status')
   .option('-t --token [token]', 'access token')
-  .action(async (options) => {
+  .action(async (options, command) => {
+    const { pcs } = command;
+
     try {
-      const { quota, used } = await PcsService.quotaInfo(options.token as string);
+      const { quota, used } = await pcs.quota();
       const bar = new Progress(':bar :used/:quota :percent', {
         complete: '█',
         incomplete: chalk.green('░'),

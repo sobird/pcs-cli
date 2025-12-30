@@ -1,3 +1,18 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/**
+ * 授权码模式授权
+ *
+ * 开发者应用在获取用户的授权码 Code 之后，通过 Code 换取 Access Token 凭证。
+ * Access Token 有效期30天，过期后支持刷新，刷新后的 Access Token 有效期仍为 30 天，刷新Access Token请按需刷新，不需要不停的刷新。
+ * 刷新请求，如果API返回失败，旧的refresh_token会失效，此时需要重新发起授权请求，获取新的 Access Token、refresh_token，而不是使用旧的 refresh_token 循环再发起刷新请求。
+ * refresh_token 只支持使用一次，refresh_token 使用后失效，下次刷新 Access Token 时需要使用上一次刷新请求响应中的 refresh_token。
+ *
+ * 获取到的授权码 code 有效期 10 分钟，且仅一次有效。
+ * 授权码模式适用于有 Server 端的应用。
+ *
+ * sobird<i@sobird.me> at 2025/12/22 17:43:07 created.
+ */
+
 import { BaseOAuthClient, type OAuthClientConfig, type OAuthTokenResponse } from './OAuth';
 
 export interface OAuthAuthorizationCodeConfig extends OAuthClientConfig {
@@ -21,7 +36,7 @@ export interface OAuthAuthorizationCodeConfig extends OAuthClientConfig {
   /**
    * 此参数在已传 “qrcode=1” 参数时有效，可选值 watch，tv，kindle，speakers 用于对二维码展示样式调整。
    */
-  qrloginfrom?: string;
+  qrloginfrom?: 'watch' | 'tv' | 'kindle' | 'speakers';
   /**
    * 此参数在已传 “qrcode=1” 参数时有效，用于设置二维码展示宽度。
    */
@@ -37,38 +52,49 @@ export interface OAuthAuthorizationCodeConfig extends OAuthClientConfig {
 }
 
 export class AuthorizationCodeGrant extends BaseOAuthClient {
-  constructor(config: Omit<OAuthAuthorizationCodeConfig, 'responseType' | 'redirectURL'>) {
+  declare config: OAuthAuthorizationCodeConfig;
+
+  constructor(config: Omit<OAuthAuthorizationCodeConfig, 'response_type' | 'redirect_uri' | 'scope'>) {
     super({
-      responseType: 'code',
-      redirectURL: 'oob',
       ...config,
+      response_type: 'code',
+      redirect_uri: 'oob',
     });
-    // if (!config.redirectURL) {
-    //   throw new Error('redirectURL is required for authorization_code grant');
-    // }
   }
 
   // 获取授权URL
   getAuthorizeURL(): string {
-    const searchParams = new URLSearchParams({
-      response_type: 'code',
-      client_id: this.config.clientId,
-      redirect_uri: this.config.redirectURL,
-      scope: this.config.scope,
-    });
+    const { client_secret, ...params } = this.config;
+    const searchParams = new URLSearchParams(params as unknown as Record<string, string>);
+
     return `https://openapi.baidu.com/oauth/2.0/authorize?${searchParams}`;
   }
 
-  // 用授权码获取Token
+  /**
+   * 用授权码获取Token
+   *
+   * GET https://openapi.baidu.com/oauth/2.0/token?
+   * grant_type=authorization_code&
+   * code=用户授权码 Code 值&
+   * client_id=您应用的AppKey&
+   * client_secret=您应用的SecretKey&
+   * redirect_uri=您应用设置的授权回调地址
+   *
+   * @param code
+   * @returns
+   */
   async authorize(code: string) {
+    const {
+      client_id, client_secret, redirect_uri, scope,
+    } = this.config;
     const { data } = await this.axios.get<OAuthTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {
       params: {
         grant_type: 'authorization_code',
-        client_id: this.config.clientId,
-        client_secret: this.config.clientSecret,
-        redirect_uri: this.config.redirectURL,
+        client_id,
+        client_secret,
+        redirect_uri,
         code,
-        scope: 'basic,netdisk',
+        scope,
       },
     });
     return data;

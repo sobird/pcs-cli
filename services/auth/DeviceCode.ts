@@ -41,19 +41,11 @@ import { BaseOAuthClient, type OAuthClientConfig, type OAuthTokenResponse } from
  */
 export type Display = 'page' | 'popup' | 'dialog' | 'mobile' | 'tv' | 'pad';
 
-export interface OAuthDeviceCodeParams {
+export interface OAuthDeviceCodeConfig extends OAuthClientConfig {
   /**
    * 固定值，值必须为device_code。
    */
-  response_type: string;
-  /**
-   * 您应用的AppKey。
-   */
-  client_id: string;
-  /**
-   * 固定值，值必须为basic,netdisk。
-   */
-  scope: string;
+  response_type: 'device_code';
 }
 
 export interface OAuthDeviceCodeResponse {
@@ -87,11 +79,12 @@ export interface OAuthDeviceCodeResponse {
 }
 
 export class DeviceCodeGrant extends BaseOAuthClient {
-  constructor(config: Omit<OAuthClientConfig, 'responseType' | 'redirectURL'>) {
+  declare config: OAuthDeviceCodeConfig;
+
+  constructor(config: Omit<OAuthDeviceCodeConfig, 'response_type' | 'redirect_uri'>) {
     super({
-      responseType: 'device_code',
-      redirectURL: 'oob',
       ...config,
+      response_type: 'device_code',
     });
   }
 
@@ -100,7 +93,7 @@ export class DeviceCodeGrant extends BaseOAuthClient {
     const { data } = await axios.get<OAuthDeviceCodeResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
       params: {
         response_type: 'device_code',
-        client_id: this.config.clientId,
+        client_id: this.config.client_id,
         scope: this.config.scope,
       },
     });
@@ -114,13 +107,16 @@ export class DeviceCodeGrant extends BaseOAuthClient {
   }
 
   async authorize(code: string) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { client_id, client_secret, scope } = this.config;
+
     const { data } = await axios.get<OAuthTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {
       params: {
-        client_id: this.config.clientId,
-        client_secret: this.config.clientSecret,
-        code,
         grant_type: 'device_token',
-        scope: 'basic,netdisk',
+        code,
+        client_id,
+        client_secret,
+        scope,
       },
     });
 

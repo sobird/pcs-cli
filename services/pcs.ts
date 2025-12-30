@@ -5,7 +5,7 @@
  */
 import fs from 'fs';
 import https from 'https';
-import { dirname } from 'path';
+import { dirname, join, relative } from 'path';
 
 import axios, { AxiosInstance } from 'axios';
 import Progress from 'progress';
@@ -106,6 +106,10 @@ interface PCSListResponse {
   request_id: number;
 }
 
+interface PCSDeleteResponse {
+  request_id: number;
+}
+
 const PcsService = {
   oauthDevice(appKey: string) {
     return axios.get<unknown, OauthDeviceResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
@@ -139,9 +143,146 @@ const PcsService = {
     });
   },
 
+};
+
+export default PcsService;
+
+export class PCSClient {
+  protected axios: AxiosInstance;
+
+  constructor(public name: string, public token: string) {
+    this.axios = axios.create({
+      timeout: 10000,
+      baseURL: 'https://pcs.baidu.com/rest/2.0',
+    });
+  }
+
+  /**
+   * 查询容量信息
+   *
+   * @param access_token
+   * @returns
+   */
+  async quota() {
+    const { data } = await this.axios.get<PCSQuotaResponse>('/pcs/quota', {
+      params: {
+        method: 'info',
+        access_token: this.token,
+      },
+    });
+    return data;
+  }
+
+  /**
+   * 查询文件信息
+   *
+   * @param access_token
+   * @param path
+   * @returns
+   */
+  async meta(path: string) {
+    const { data } = await this.axios.get<PCSMetaResponse>('/pcs/file', {
+      params: {
+        method: 'meta',
+        access_token: this.token,
+        path: this.resolve(path),
+      },
+    });
+
+    return data;
+  }
+
+  /**
+   * 获取文件列表
+   *
+   * @param path
+   * @returns
+   */
+  async list(path: string) {
+    const { data } = await this.axios.get<PCSListResponse>('/pcs/file', {
+      params: {
+        method: 'list',
+        access_token: this.token,
+        path: this.resolve(path),
+      },
+    });
+    return data;
+  }
+
+  /** 删除文件 */
+  async delete(path: string) {
+    const { data } = await axios.get<PCSDeleteResponse>('/pcs/file', {
+      params: {
+        method: 'delete',
+        access_token: this.token,
+        path: this.resolve(path),
+      },
+    });
+    return data;
+  }
+
+  /**
+   * 离线下载
+   *
+   * @deprecated
+   *
+   * @param source_url
+   * @param save_path
+   * @returns
+   */
+  async fetch(source_url: string, save_path: string) {
+    const { data } = await axios.get('/pcs/services/cloud_dl', {
+      params: {
+        method: 'add_task',
+        access_token: this.token,
+        save_path: this.resolve(save_path),
+        source_url,
+      },
+    });
+    return data;
+  }
+
+  /**
+   * 下载指定的文件
+   *
+   * @param path
+   * @param local
+   * @returns
+   */
+  async download(path: string, local: string) {
+    fs.mkdirSync(dirname(local), { recursive: true });
+    const writer = fs.createWriteStream(local);
+    const { data, headers } = await this.axios.get('/pcs/file', {
+      params: {
+        method: 'download',
+        access_token: this.token,
+        path: this.resolve(path),
+      },
+      responseType: 'stream',
+    });
+
+    const totalLength = headers['content-length'];
+
+    const progressBar = new Progress(' downloading [:bar] :rate/bps :percent :etas', {
+      complete: '=',
+      incomplete: ' ',
+      width: 40,
+      // renderThrottle: 1,
+      total: parseInt(totalLength, 10),
+    });
+
+    data.on('data', (chunk: Buffer) => { return progressBar.tick(chunk.length); });
+    data.pipe(writer);
+
+    return new Promise<void>((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
+    });
+  }
+
   /** 上传文件 */
-  async upload2(access_token: string, localPath: string, path: string, ondup = 'overwrite', type?: string) {
-    let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${access_token}&path=${encodeURIComponent(path)}&ondup=${ondup}`;
+  async upload(localPath: string, path: string, ondup = 'overwrite', type?: string) {
+    let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${this.token}&path=${encodeURIComponent(path)}&ondup=${ondup}`;
     if (type) {
       uploadPath = `${uploadPath}&type=${type}`;
     }
@@ -188,141 +329,40 @@ const PcsService = {
         progressBar.tick(chunk.length);
       });
     });
-  },
-  /** 删除文件 */
-  delete(access_token: string, path: string) {
-    return axios.get('/pcs/file', {
-      params: {
-        method: 'delete',
-        access_token,
-        path,
-      },
-    });
-  },
-  /** 离线下载 */
-  fetch(access_token: string, source_url: string, save_path: string) {
-    return axios.get('/pcs/services/cloud_dl', {
-      params: {
-        method: 'add_task',
-        access_token,
-        save_path,
-        source_url,
-      },
-    });
-  },
+  }
 
-  /** 分片上传 */
-  createSuperFile(access_token: string, path: string, param: object) {
-    return axios.get('/pcs/file', {
+  /**
+   * 分片上传
+   *
+   * @param path
+   * @param param
+   * @returns
+   */
+  async createSuperFile(path: string, param: object) {
+    const { data } = await axios.get('/pcs/file', {
       params: {
         method: 'createsuperfile',
-        access_token,
+        access_token: this.token,
         path,
         param: JSON.stringify(param),
       },
     });
-  },
-};
-
-export default PcsService;
-
-export class PCSClient {
-  protected axios: AxiosInstance;
-
-  constructor(public name: string, public token: string) {
-    this.axios = axios.create({
-      timeout: 10000,
-      baseURL: 'https://pcs.baidu.com/rest/2.0',
-    });
-  }
-
-  /**
-   * 查询容量信息
-   *
-   * @param access_token
-   * @returns
-   */
-  async quota() {
-    const { data } = await this.axios.get<PCSQuotaResponse>('/pcs/quota', {
-      params: {
-        method: 'info',
-        access_token: this.token,
-      },
-    });
     return data;
   }
 
-  /**
-   * 查询文件信息
-   *
-   * @param access_token
-   * @param path
-   * @returns
-   */
-  async meta(path: string) {
-    const { data } = await this.axios.get<PCSMetaResponse>('/pcs/file', {
-      params: {
-        method: 'meta',
-        access_token: this.token,
-        path,
-      },
-    });
-
-    return data;
+  get rootdir() {
+    return join('/apps', this.name);
   }
 
-  /**
-   * 获取文件列表
-   *
-   * @param path
-   * @returns
-   */
-  async list(path: string) {
-    const { data } = await this.axios.get<PCSListResponse>('/pcs/file', {
-      params: {
-        method: 'list',
-        access_token: this.token,
-        path,
-      },
-    });
-    return data;
+  resolve(path: string) {
+    return join(this.rootdir, path);
   }
 
-  /**
-   * 下载指定的文件
-   *
-   * @param path
-   * @param local
-   * @returns
-   */
-  async download(path: string, local: string) {
-    fs.mkdirSync(dirname(local), { recursive: true });
-    const writer = fs.createWriteStream(local);
-    const { data, headers } = await this.axios.get('/pcs/file', {
-      params: {
-        method: 'download',
-        access_token: this.token,
-        path,
-      },
-      responseType: 'stream',
-    });
-
-    const totalLength = headers['content-length'];
-
-    const progressBar = new Progress(' downloading [:bar] :rate/bps :percent :etas', {
-      complete: '=',
-      incomplete: ' ',
-      width: 40,
-      // renderThrottle: 1,
-      total: parseInt(totalLength, 10),
-    });
-
-    data.on('data', (chunk: Buffer) => { return progressBar.tick(chunk.length); });
-    data.pipe(writer);
-
-    return new Promise((resolve, reject) => {
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    });
+  normalize(path: string) {
+    // const pathPrefix = join('/apps', this.name);
+    // if (path.indexOf(pathPrefix) === 0) {
+    //   return path.substring(pathPrefix.length, path.length);
+    // }
+    return relative(this.rootdir, path);
   }
 }

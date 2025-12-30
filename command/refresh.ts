@@ -1,40 +1,29 @@
 import { Command } from '@commander-js/extra-typings';
-import axios from 'axios';
 import chalk from 'chalk';
-import PcsService from 'services/pcs';
-import { fileJSON, log } from 'utils';
+
+import { DeviceCodeGrant } from '@/services/auth';
+import { PCS_CONF } from '@/utils/constants';
+import { writeJSON } from '@/utils/json';
 
 export const refreshCommand = new Command('refresh')
   .description('refresh token')
-  .option('-k, --key <string>', 'app key')
-  .option('-s, --secret <string>', 'app secret')
-  .option('-t --refresh-token [refresh token]', 'refresh token')
+  .option('-k, --key <string>', 'app key', '')
+  .option('-s, --secret <string>', 'app secret', '')
+  .option('-t --refresh-token <refresh token>', 'refresh token', '')
   .action(async (options) => {
-    console.log('options', options);
-
-    const res33 = axios.get('https://openapi.baidu.com/oauth/2.0/token', {
-      params: {
-        client_id: options.key,
-        client_secret: options.secret,
-        refresh_token: options.refreshToken,
-        grant_type: 'refresh_token',
-      },
+    const oauth = new DeviceCodeGrant({
+      client_id: options.key,
+      client_secret: options.secret,
     });
-    console.log('res33', res33);
-    return;
 
     try {
-      const res = await PcsService.refreshToken(options.key as string, options.secret as string, options.refreshToken as string);
-      fileJSON('TOKEN', {
-        ...res,
-        key: options.key,
-        secret: options.secret,
-      });
+      const refreshToken = await oauth.refreshToken(options.refreshToken);
+      // 保存配置
+      await writeJSON(PCS_CONF, { ...options, ...refreshToken });
 
-      log('Successfully refreshed token', chalk.green);
+      console.log(chalk.green('Successfully refreshed token'));
     } catch (err: any) {
-      console.log('err', err);
       const { response: { data } } = err;
-      log(`OAuth error ${data.error} : ${data.error_description}`, chalk.red);
+      console.log(chalk.red(`OAuth error ${data.error} : ${data.error_description}`));
     }
   });

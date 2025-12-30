@@ -5,7 +5,6 @@ import { join, sep } from 'path';
 import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import { glob } from 'glob';
-import PcsService from 'services/pcs';
 import { log, toRemotePath, splitFile } from 'utils';
 
 export const uploadCommand = new Command('upload')
@@ -15,20 +14,19 @@ export const uploadCommand = new Command('upload')
   .option('-t --token [token]', 'access token')
   .option('-b --bytes <number>', 'Split upload bytes size', Number, 1073741824)
   .option('--thread', 'Thread')
-  .action(async (pattern, remote, options) => {
+  .action(async (pattern, remote, options, command) => {
+    const { pcs } = command;
+
     const files = await glob(pattern, {
       nodir: true,
     });
     const { bytes } = options;
-    console.log('options', options);
-    console.log('bytes', bytes);
 
     const temp = join(os.tmpdir(), 'pcs-cli');
     try {
       // 串行上传
       files.reduce(async (previousValue, currentValue) => {
-        const res = await previousValue;
-        console.log('res', res);
+        await previousValue;
         const fileStat = statSync(currentValue);
 
         if (Number.isInteger(bytes) && fileStat.size > bytes) {
@@ -40,17 +38,16 @@ export const uploadCommand = new Command('upload')
           for (const piece of pieces as string[]) {
             //
             // eslint-disable-next-line no-await-in-loop
-            const { md5 } = await PcsService.upload2(options.token, piece, '', 'overwrite', 'tmpfile') as any;
-            console.log('md5', md5);
+            const { md5 } = await pcs.upload(piece, '', 'overwrite', 'tmpfile') as any;
             blocks.push(md5);
           }
           const param = {
             block_list: blocks,
           };
-          return PcsService.createSuperFile(options.token, toRemotePath(join(remote, currentValue)), param) as unknown as Promise<void>;
+          return pcs.createSuperFile(toRemotePath(join(remote, currentValue)), param) as unknown as Promise<void>;
         }
         log(`${chalk.blueBright('==>')} Uploading ${currentValue}`);
-        return PcsService.upload2(options.token, currentValue, toRemotePath(join(remote, currentValue))) as Promise<void>;
+        return pcs.upload(currentValue, toRemotePath(join(remote, currentValue))) as Promise<void>;
       }, Promise.resolve());
 
       // todo

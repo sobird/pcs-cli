@@ -8,23 +8,40 @@
  * sobird<i@sobird.me> at 2025/12/22 18:18:33 created.
  */
 
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import { BaseOAuthClient, type OAuthClientConfig, type OAuthTokenResponse } from './OAuth';
 
+export interface OAuthImplicitGrantConfig extends OAuthClientConfig {
+  response_type: 'token',
+  /**
+   * 授权页面展示样式。参见授权展示方式。
+   */
+  display?: string;
+  /**
+   * 重定向后会带上state参数。建议开发者利用state参数来防止CSRF攻击。
+   */
+  state?: string;
+}
+
 export class ImplicitGrant extends BaseOAuthClient {
-  constructor(config: OAuthClientConfig) {
-    super(config);
-    if (!config.redirectURL) {
-      throw new Error('redirectURL is required for authorization_code grant');
-    }
+  declare config: OAuthImplicitGrantConfig;
+
+  constructor(config: Omit<OAuthImplicitGrantConfig, 'response_type' | 'redirect_uri'>) {
+    super({
+      ...config,
+      response_type: 'token',
+      redirect_uri: 'oob',
+    });
+    // if (!config.redirectURL) {
+    //   throw new Error('redirectURL is required for authorization_code grant');
+    // }
   }
 
   getAuthorizeURL(): string {
-    const searchParams = new URLSearchParams({
-      response_type: 'token',
-      client_id: this.config.clientId,
-      redirect_uri: this.config.redirectURL,
-      scope: this.config.scope,
-    });
+    const { client_secret, ...params } = this.config;
+    const searchParams = new URLSearchParams(params as unknown as Record<string, string>);
+
     return `https://openapi.baidu.com/oauth/2.0/authorize?${searchParams}`;
   }
 

@@ -1,36 +1,22 @@
-import { sep } from 'path';
-
 import { Command } from '@commander-js/extra-typings';
-import axios from 'axios';
 import bytes from 'bytes';
 import chalk from 'chalk';
 import cliui from 'cliui';
 import dayjs from 'dayjs';
-import PcsService from 'services/pcs';
-import { log, toRemotePath } from 'utils';
 
 export const listCommand = new Command('list')
   .description('list directory contents')
-  .argument('[path]', 'path', sep)
+  .argument('[path]', 'path', '/')
   .alias('ll')
-  .option('-t --token [token]', 'access token')
-  .action(async (path, options) => {
-    console.log('options', options);
-
-    const data = await axios.get('/pcs/file', {
-      params: {
-        method: 'list',
-        access_token: options.token,
-        path,
-      },
-    });
-    console.log('data', data);
-    return;
+  .option('-t --token <token>', 'access token', '')
+  .action(async (path, options, command) => {
+    const { pcs } = command;
 
     try {
       const ui = cliui({} as any);
 
-      const { list } = await PcsService.listFile(toRemotePath(path), options.token as string);
+      const { list } = await pcs.list(path);
+
       list.map((item) => {
         const {
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -58,6 +44,6 @@ export const listCommand = new Command('list')
       console.log(ui.toString());
     } catch (err: any) {
       const { response: { data } } = err;
-      log(`error code ${data.error_code} : ${data.error_msg}`, chalk.red);
+      console.error(chalk.red(`error code ${data.error_code} : ${data.error_msg}`));
     }
   });
