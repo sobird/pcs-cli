@@ -1,7 +1,7 @@
 {
   "name": "pcs-cli",
   "description": "Baidu Personal Cloud Storage's Command Line Interface.",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "type": "module",
   "bin": {
     "pcs": "bin/pcs.ts"
