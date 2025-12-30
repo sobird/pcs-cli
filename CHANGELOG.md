@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/sobird/pcs-cli/compare/v1.2.2...v1.2.3) (2025-12-30)
+
+
+### Bug Fixes
+
+* add tsx devDeps ([84ba153](https://github.com/sobird/pcs-cli/commit/84ba1532005251b6abca1980a0c167230aff6657))
+
 ## [1.2.2](https://github.com/sobird/pcs-cli/compare/v1.2.1...v1.2.2) (2025-12-30)
 
 
