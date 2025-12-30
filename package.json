@@ -4,7 +4,7 @@
   "version": "1.1.0",
   "type": "module",
   "bin": {
-    "pcs": "bin/pcs.js"
+    "pcs": "bin/pcs.ts"
   },
   "scripts": {
     "dev": "rollup -cw --watch.onEnd='node ./afterBuildScript.js' --environment NODE_ENV:development",
@@ -13,6 +13,7 @@
     "build:esm": "tsc -m es6 --outDir dist/esm",
     "test": "echo \"pre-commit scripts\"",
     "lint:eslint": "eslint \"src/**/*.{ts,js}\" --fix",
+    "prepublishOnly": "tsx scripts/prepublish.ts",
     "preversion": "npm run lint:eslint",
     "version": "git add -A .",
     "postversion": "git push && git push --tags"
@@ -80,6 +81,9 @@
     "typescript": "^5.9.3",
     "vitest": "^4.0.15"
   },
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   }
