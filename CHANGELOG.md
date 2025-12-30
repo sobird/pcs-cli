@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.5](https://github.com/sobird/pcs-cli/compare/v1.2.4...v1.2.5) (2025-12-30)
+
+
+### Bug Fixes
+
+* enable trusted publishing for npm packages ([aa9c9cb](https://github.com/sobird/pcs-cli/commit/aa9c9cbb5bdf4858a3805d13957ae20f79b10f31))
+
 ## [1.2.4](https://github.com/sobird/pcs-cli/compare/v1.2.3...v1.2.4) (2025-12-30)
 
 
