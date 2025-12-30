@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/sobird/pcs-cli/compare/v1.3.0...v1.3.1) (2025-12-30)
+
+
+### Bug Fixes
+
+* test workflow ([b06c589](https://github.com/sobird/pcs-cli/commit/b06c589066bf8d24130616664a8128258cd66972))
+
 ## [1.3.0](https://github.com/sobird/pcs-cli/compare/v1.2.5...v1.3.0) (2025-12-30)
 
 
