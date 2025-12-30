@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/sobird/pcs-cli/compare/v1.2.1...v1.2.2) (2025-12-30)
+
+
+### Bug Fixes
+
+* deps vulnerabilities ([f01c7a1](https://github.com/sobird/pcs-cli/commit/f01c7a195fe81cec5dac299edc8064a56b1f9bdd))
+* remove package-lock=false npmrc ([1512901](https://github.com/sobird/pcs-cli/commit/151290172758af9592794262b5cd73da8d699de5))
+
 ## [1.2.1](https://github.com/sobird/pcs-cli/compare/v1.2.0...v1.2.1) (2025-12-30)
 
 
