@@ -22,8 +22,6 @@
  * sobird<i@sobird.me> at 2025/12/19 0:51:42 created.
  */
 
-import axios from '@/utils/axios';
-
 // https://openapi.baidu.com/oauth/2.0/authorize?response_type=code&client_id=58tGN6NF3c2rrFHz0SynM8ZEtfuSd5ZG&redirect_uri=oob&scope=basic,netdisk&device_id=42602234
 
 import { BaseOAuthClient, type OAuthClientConfig, type OAuthTokenResponse } from './OAuth';
@@ -90,7 +88,7 @@ export class DeviceCodeGrant extends BaseOAuthClient {
 
   // 获取设备码
   async getDeviceCode() {
-    const { data } = await axios.get<OAuthDeviceCodeResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
+    const { data } = await this.axios.get<OAuthDeviceCodeResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
       params: {
         response_type: 'device_code',
         client_id: this.config.client_id,
@@ -110,7 +108,7 @@ export class DeviceCodeGrant extends BaseOAuthClient {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { client_id, client_secret, scope } = this.config;
 
-    const { data } = await axios.get<OAuthTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {
+    const { data } = await this.axios.get<OAuthTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {
       params: {
         grant_type: 'device_token',
         code,

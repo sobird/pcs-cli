@@ -18,7 +18,7 @@ import {
 
 import chalk from 'chalk';
 
-import { name } from '@/package.json';
+import { name } from '../package.json';
 
 export { link } from './link';
 export { splitFile } from './splitFile';

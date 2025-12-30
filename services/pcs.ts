@@ -9,25 +9,6 @@ import { dirname, join, relative } from 'path';
 
 import axios, { AxiosInstance } from 'axios';
 import Progress from 'progress';
-// import axios, { InternalHttpRequestConfig } from 'utils/axios';
-
-interface OauthDeviceResponse {
-  device_code: string;
-  user_code: string;
-  verification_url: string;
-  qrcode_url: string;
-  expires_in: number;
-  interval: number;
-}
-
-interface OauthTokenResponse {
-  expires_in: number;
-  refresh_token: string;
-  access_token: string;
-  session_secret: string,
-  session_key: string,
-  scope: string;
-}
 
 export interface PCSNode {
   app_id: number;
@@ -109,43 +90,6 @@ interface PCSListResponse {
 interface PCSDeleteResponse {
   request_id: number;
 }
-
-const PcsService = {
-  oauthDevice(appKey: string) {
-    return axios.get<unknown, OauthDeviceResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
-      params: {
-        client_id: appKey,
-        response_type: 'device_code',
-        scope: 'basic,netdisk',
-      },
-    });
-  },
-  oauthToken(appKey: string, appSec: string, device_code: string) {
-    return axios.get<unknown, OauthTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {
-      params: {
-        client_id: appKey,
-        client_secret: appSec,
-        code: device_code,
-        grant_type: 'device_token',
-        scope: 'basic,netdisk',
-      },
-    });
-  },
-  /** 刷新token */
-  refreshToken(client_id: string, client_secret: string, refresh_token: string) {
-    return axios.get('https://openapi.baidu.com/oauth/2.0/token', {
-      params: {
-        client_id,
-        client_secret,
-        refresh_token,
-        grant_type: 'refresh_token',
-      },
-    });
-  },
-
-};
-
-export default PcsService;
 
 export class PCSClient {
   protected axios: AxiosInstance;

@@ -17,10 +17,11 @@ import {
   refreshCommand,
   uploadCommand,
 } from '@/command';
-import { name, version } from '@/package.json' with { type: 'json' };
 import { PCSClient } from '@/services/pcs';
 import { PCS_CONF } from '@/utils/constants';
 import { readJSON } from '@/utils/json';
+
+import { name, version } from '../package.json';
 
 declare module '@commander-js/extra-typings' {
   interface Command {
