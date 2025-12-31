@@ -7,16 +7,9 @@
     "pcs": "bin/pcs.ts"
   },
   "scripts": {
-    "dev": "rollup -cw --watch.onEnd='node ./afterBuildScript.js' --environment NODE_ENV:development",
-    "start": "tsc -w",
     "build": "rollup -c --environment NODE_ENV:production",
-    "build:esm": "tsc -m es6 --outDir dist/esm",
-    "test": "echo \"pre-commit scripts\"",
-    "lint:eslint": "eslint \"src/**/*.{ts,js}\" --fix",
-    "prepublishOnly": "tsx scripts/prepublish.ts",
-    "preversion": "npm run lint:eslint",
-    "version": "git add -A .",
-    "postversion": "git push && git push --tags"
+    "test": "vitest",
+    "prepublishOnly": "tsx scripts/prepublish.ts"
   },
   "repository": {
     "type": "git",
@@ -45,14 +38,14 @@
   "homepage": "https://github.com/sobird/pcs-cli",
   "dependencies": {
     "@commander-js/extra-typings": "^14.0.0",
-    "axios": "^1.6.1",
+    "axios": "^1.13.2",
     "bytes": "^3.1.2",
-    "chalk": "^5.3.0",
-    "cliui": "^8.0.1",
+    "chalk": "^5.6.2",
+    "cliui": "^9.0.1",
     "commander": "^14.0.2",
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.19",
     "glob": "^13.0.0",
-    "open": "^9.1.0",
+    "open": "^11.0.0",
     "progress": "^2.0.3",
     "prompts": "^2.4.2"
   },
@@ -67,7 +60,6 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/bytes": "^3.1.4",
     "@types/node": "^20.9.0",
-    "@types/osenv": "^0.1.3",
     "@types/progress": "^2.0.7",
     "@types/prompts": "^2.4.8",
     "esbuild": "^0.27.2",
