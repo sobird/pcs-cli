@@ -1,4 +1,6 @@
-name: Publish Package
+# https://docs.npmjs.com/trusted-publishers#supported-cicd-providers
+
+name: Publish package to NPM
 
 on:
   workflow_dispatch:
@@ -6,21 +8,50 @@ on:
 permissions:
   id-token: write  # Required for OIDC
   contents: read
-
+  
 jobs:
   publish:
+    name: Publish package to NPM
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
-      - uses: actions/setup-node@v4
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-      - run: pnpm install
-      - run: npm test
-      - run: npm publish
+          node-version-file: .node-version
+          registry-url: https://registry.npmjs.org/
+          # cache: pnpm
+
+      - name: Restore cache
+        id: dependencies-cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+              ${{ runner.os }}-pnpm-
+
+      - name: Install Dependencies 🔧
+        if: steps.dependencies-cache.outputs.cache-hit != 'true'
+        run: pnpm install
+
+      - name: Build ☕️
+        run: pnpm build
+
+      - name: Publish to NPM
+        run: npm publish
+        # env:
+        #   NPM_CONFIG_PROVENANCE: true
