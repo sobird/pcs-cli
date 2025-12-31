@@ -91,6 +91,16 @@ interface PCSDeleteResponse {
   request_id: number;
 }
 
+interface PCSUploadResponse {
+  ctime: number;
+  fs_id: number;
+  md5: string;
+  mtime: number;
+  path: string;
+  size: number;
+  request_id: number;
+}
+
 export class PCSClient {
   protected axios: AxiosInstance;
 
@@ -225,7 +235,7 @@ export class PCSClient {
   }
 
   /** 上传文件 */
-  async upload(localPath: string, path: string, ondup = 'overwrite', type?: string) {
+  async upload(localPath: string, path: string, ondup = 'overwrite', type?: string): Promise<PCSUploadResponse> {
     let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${this.token}&path=${encodeURIComponent(path)}&ondup=${ondup}`;
     if (type) {
       uploadPath = `${uploadPath}&type=${type}`;

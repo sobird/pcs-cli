@@ -10,5 +10,6 @@ module.exports = {
     }],
     'import/no-unresolved': 'off',
     'arrow-body-style': ['error', 'always'],
+    'no-restricted-syntax': ['error', 'ForInStatement', 'LabeledStatement', 'WithStatement'],
   },
 };
