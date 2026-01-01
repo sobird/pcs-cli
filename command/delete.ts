@@ -7,9 +7,7 @@ export const deleteCommand = new Command('delete')
   .description('delete remote file')
   .argument('<remote>', 'remote path')
   .option('-t --token <token>', 'access token', '')
-  .action(async (remote, options, command) => {
-    const { pcs } = command;
-
+  .action(async (remote, options, { pcs }) => {
     if (pcs.resolve(remote) === pcs.resolve('/')) {
       console.log(chalk.red('You are about to delete the root directory of the application, which will lose all data'));
       const { confirm } = await prompts({

@@ -6,9 +6,7 @@ import Progress from 'progress';
 export const quotaCommand = new Command('quota')
   .description('check your pcs status')
   .option('-t --token [token]', 'access token')
-  .action(async (options, command) => {
-    const { pcs } = command;
-
+  .action(async (options, { pcs }) => {
     try {
       const { quota, used } = await pcs.quota();
       const bar = new Progress(':bar :used/:quota :percent', {

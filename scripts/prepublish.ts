@@ -9,9 +9,9 @@ import pkg from '../package.json' with { type: 'json' };
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const packageJsonPath = path.join(__dirname, '../package.json');
+const pkgPath = path.join(__dirname, '../package.json');
 
 // 修改 bin 字段
 pkg.bin.pcs = 'dist/pcs.js';
 
-fs.writeFileSync(packageJsonPath, JSON.stringify(pkg, null, 2));
+fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));

@@ -8,9 +8,7 @@ export const fetchCommand = new Command('fetch')
   .argument('[source]', 'source path', sep)
   .argument('[remote]', 'remote path', '.')
   .option('-t --token <token>', 'access token', '')
-  .action(async (source, remote, options, command) => {
-    const { pcs } = command;
-
+  .action(async (source, remote, options, { pcs }) => {
     try {
       await pcs.fetch(source, remote);
     } catch (err: any) {

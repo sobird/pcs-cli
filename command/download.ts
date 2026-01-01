@@ -9,9 +9,7 @@ export const downloadCommand = new Command('download')
   .argument('[remote]', 'remote path', sep)
   .argument('[local]', 'local path', '.')
   .option('-t --token <token>', 'access token', '')
-  .action(async (remote, local, options, command) => {
-    const { pcs } = command;
-
+  .action(async (remote, local, options, { pcs }) => {
     try {
       const { list } = await pcs.list(remote);
 

@@ -9,9 +9,7 @@ export const listCommand = new Command('list')
   .argument('[path]', 'path', '/')
   .alias('ll')
   .option('-t --token <token>', 'access token', '')
-  .action(async (path, options, command) => {
-    const { pcs } = command;
-
+  .action(async (path, options, { pcs }) => {
     try {
       const ui = cliui({} as any);
 
