@@ -48,7 +48,7 @@ const program = new Command(name)
         actionCommand.pcs = new PCSClient(actionCommand.getOptionValue('name') || config.name, actionCommand.getOptionValue('token') || config.access_token);
       }
     } catch (err) {
-      //
+      throw new Error(chalk.redBright('Please use the "pcs init" command to initialize'));
     }
   });
 
@@ -65,7 +65,7 @@ program
 
 try {
   program.exitOverride();
-  program.parse(process.argv);
-} catch (err) {
-  // custom processing...
+  await program.parseAsync(process.argv);
+} catch (error) {
+  console.log((error as Error).message);
 }
