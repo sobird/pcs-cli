@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/sobird/pcs-cli/compare/v1.4.0...v1.5.0) (2026-01-11)
+
+
+### Features
+
+* support ImplicitGrant when not enter a secret ([80f5dcf](https://github.com/sobird/pcs-cli/commit/80f5dcf5848b5fef065e3f9b0e4276bb98378e3c))
+
+
+### Bug Fixes
+
+* if it is not initialized, the command is not allowed to be used ([25f6536](https://github.com/sobird/pcs-cli/commit/25f65369d428c118793acdc8e830d6d31c53a93e))
+
 ## [1.4.0](https://github.com/sobird/pcs-cli/compare/v1.3.2...v1.4.0) (2025-12-31)
 
 
