@@ -5,6 +5,8 @@
  * 简化模式不支持刷新 Access Token，过期后需用户重新登录授权。
  * 简化模式适用于无 server 端配合的应用。
  *
+ * @see https://pan.baidu.com/union/doc/6l0ryrjzv
+ *
  * sobird<i@sobird.me> at 2025/12/22 18:18:33 created.
  */
 
@@ -27,15 +29,12 @@ export interface OAuthImplicitGrantConfig extends OAuthClientConfig {
 export class ImplicitGrant extends BaseOAuthClient {
   declare config: OAuthImplicitGrantConfig;
 
-  constructor(config: Omit<OAuthImplicitGrantConfig, 'response_type' | 'redirect_uri'>) {
+  constructor(config: Omit<OAuthImplicitGrantConfig, 'client_secret' | 'response_type' | 'redirect_uri'>) {
     super({
       ...config,
       response_type: 'token',
       redirect_uri: 'oob',
     });
-    // if (!config.redirectURL) {
-    //   throw new Error('redirectURL is required for authorization_code grant');
-    // }
   }
 
   getAuthorizeURL(): string {

@@ -25,7 +25,7 @@ export interface OAuthClientConfig {
   /**
    * 您应用的AppSecret
    */
-  client_secret: string;
+  client_secret?: string;
 
   /**
    * 授权后要回调的地址URL
