@@ -4,8 +4,8 @@ import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 
 export const fetchCommand = new Command('fetch')
-  .description('fetch source to remote')
-  .argument('[source]', 'source path', sep)
+  .description('offline download')
+  .argument('[url]', 'url', sep)
   .argument('[remote]', 'remote path', '.')
   .option('-t --token <token>', 'access token', '')
   .action(async (source, remote, options, { pcs }) => {

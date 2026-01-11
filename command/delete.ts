@@ -9,7 +9,7 @@ export const deleteCommand = new Command('delete')
   .option('-t --token <token>', 'access token', '')
   .action(async (remote, options, { pcs }) => {
     if (pcs.resolve(remote) === pcs.resolve('/')) {
-      console.log(chalk.red('You are about to delete the root directory of the application, which will lose all data'));
+      console.log(chalk.redBright('You are about to delete the root directory of the application, which will lose all data'));
       const { confirm } = await prompts({
         type: 'confirm',
         name: 'confirm',
