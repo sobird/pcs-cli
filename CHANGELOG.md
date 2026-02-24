@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/sobird/pcs-cli/compare/v1.6.0...v1.6.1) (2026-02-24)
+
+
+### Bug Fixes
+
+* program.exitOverride(); try catch error keep silent ([c2a4840](https://github.com/sobird/pcs-cli/commit/c2a4840bbaffb9fa971a1df09f44fb93cd3e263d))
+
 ## [1.6.0](https://github.com/sobird/pcs-cli/compare/v1.5.0...v1.6.0) (2026-02-24)
 
 
