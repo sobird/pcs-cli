@@ -6,7 +6,7 @@ import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import { glob } from 'glob';
 
-import { splitFile } from '@/utils';
+import { splitFile } from '../utils';
 
 export const uploadCommand = new Command('upload')
   .description('upload local file')

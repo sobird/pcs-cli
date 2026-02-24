@@ -1,9 +1,9 @@
 import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 
-import { DeviceCodeGrant } from '@/services/auth';
-import { PCS_CONF } from '@/utils/constants';
-import { writeJSON } from '@/utils/json';
+import { DeviceCodeGrant } from '../services/auth';
+import { PCS_CONF } from '../utils/constants';
+import { writeJSON } from '../utils/json';
 
 export const refreshCommand = new Command('refresh')
   .description('refresh token')

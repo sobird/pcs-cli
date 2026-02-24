@@ -7,10 +7,10 @@ import chalk from 'chalk';
 import open from 'open';
 import prompts, { PromptObject } from 'prompts';
 
-import { DeviceCodeGrant, ImplicitGrant } from '@/services/auth';
-import { link } from '@/utils';
-import { PCS_CONF } from '@/utils/constants';
-import { writeJSON } from '@/utils/json';
+import { DeviceCodeGrant, ImplicitGrant } from '../services/auth';
+import { link } from '../utils';
+import { PCS_CONF } from '../utils/constants';
+import { writeJSON } from '../utils/json';
 
 export async function getAccessTokenByImplicitGrant(options: ReturnType<typeof initCommand.opts>) {
   const oauth = new ImplicitGrant({

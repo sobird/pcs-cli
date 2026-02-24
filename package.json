@@ -10,6 +10,7 @@
     "dev": "tsx bin/pcs.ts",
     "build": "tsup",
     "test": "vitest",
+    "typecheck": "tsc --noEmit",
     "prepublishOnly": "tsx scripts/prepublish.ts"
   },
   "repository": {
