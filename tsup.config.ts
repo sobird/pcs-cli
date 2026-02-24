@@ -2,16 +2,12 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: [
-    'src/index.ts',
+    'bin/cli.ts',
   ],
   format: ['esm'],
   shims: true,
   clean: true,
-  dts: { resolve: false },
+  dts: false,
   treeshake: true,
-  // minify: true,
-  banner: {
-    js: '#!/usr/bin/env node',
-  },
-  skipNodeModulesBundle: false,
+  minify: 'terser',
 });

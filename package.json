@@ -4,10 +4,10 @@
   "version": "1.5.0",
   "type": "module",
   "bin": {
-    "pcs": "bin/pcs.ts"
+    "pcs": "bin/dev.ts"
   },
   "scripts": {
-    "dev": "tsx bin/pcs.ts",
+    "dev": "tsx bin/dev.ts",
     "build": "tsup",
     "test": "vitest",
     "typecheck": "tsc --noEmit",

@@ -12,6 +12,6 @@ const __dirname = path.dirname(__filename);
 const pkgPath = path.join(__dirname, '../package.json');
 
 // 修改 bin 字段
-pkg.bin.pcs = 'dist/pcs.js';
+pkg.bin.pcs = 'dist/cli.js';
 
 fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
