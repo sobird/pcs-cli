@@ -60,9 +60,10 @@ program
   .addCommand(refreshCommand)
   .addCommand(downloadCommand);
 
+program.exitOverride();
+
 try {
-  program.exitOverride();
   await program.parseAsync(process.argv);
 } catch (error) {
-  console.log((error as Error).message);
+  // console.log((error as Error).message);
 }
