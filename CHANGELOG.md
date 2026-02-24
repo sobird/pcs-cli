@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/sobird/pcs-cli/compare/v1.5.0...v1.6.0) (2026-02-24)
+
+
+### Features
+
+* do not use tsconfig paths ([16c2115](https://github.com/sobird/pcs-cli/commit/16c2115f0a49834d30f30927bf54d39608ab1d68))
+* using tsup instead of rollup & add src dir ([94f59ba](https://github.com/sobird/pcs-cli/commit/94f59ba1feeb741821690a4afb4510e7b4908834))
+
+
+### Bug Fixes
+
+* createSuperFile need resolve path ([3f88b0e](https://github.com/sobird/pcs-cli/commit/3f88b0ec4a95e714cf27454d2a2a820b2612ddc2))
+* upload file need resolve path ([3f24482](https://github.com/sobird/pcs-cli/commit/3f2448299e9679de2593b6e8cfa446b62726a467))
+
 ## [1.5.0](https://github.com/sobird/pcs-cli/compare/v1.4.0...v1.5.0) (2026-01-11)
 
 
