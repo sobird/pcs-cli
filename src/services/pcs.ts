@@ -297,7 +297,7 @@ export class PCSClient {
       params: {
         method: 'createsuperfile',
         access_token: this.token,
-        path,
+        path: this.resolve(path),
         param: JSON.stringify(param),
       },
     });
