@@ -236,7 +236,7 @@ export class PCSClient {
 
   /** 上传文件 */
   async upload(localPath: string, path: string, ondup = 'overwrite', type?: string): Promise<PCSUploadResponse> {
-    let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${this.token}&path=${encodeURIComponent(path)}&ondup=${ondup}`;
+    let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${this.token}&path=${encodeURIComponent(this.resolve(path))}&ondup=${ondup}`;
     if (type) {
       uploadPath = `${uploadPath}&type=${type}`;
     }
