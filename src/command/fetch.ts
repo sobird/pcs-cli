@@ -1,7 +1,7 @@
 import { sep } from 'node:path';
 
-import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
+import { Command } from 'commander';
 
 export const fetchCommand = new Command('fetch')
   .description('offline download')

@@ -1,7 +1,7 @@
 import { join, sep } from 'node:path/posix';
 
-import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
+import { Command } from 'commander';
 
 export const downloadCommand = new Command('download')
   .alias('dl')

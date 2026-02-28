@@ -1,7 +1,7 @@
-import { Command } from '@commander-js/extra-typings';
 import bytes from 'bytes';
 import chalk from 'chalk';
 import cliui from 'cliui';
+import { Command } from 'commander';
 import dayjs from 'dayjs';
 
 export const listCommand = new Command('list')

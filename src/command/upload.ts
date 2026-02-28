@@ -2,8 +2,8 @@ import { statSync } from 'node:fs';
 import os from 'node:os';
 import { join, sep } from 'node:path';
 
-import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
+import { Command } from 'commander';
 import { glob } from 'glob';
 
 import { splitFile } from '../utils';

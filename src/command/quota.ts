@@ -1,6 +1,6 @@
-import { Command } from '@commander-js/extra-typings';
 import bytes from 'bytes';
 import chalk from 'chalk';
+import { Command } from 'commander';
 import Progress from 'progress';
 
 export const quotaCommand = new Command('quota')

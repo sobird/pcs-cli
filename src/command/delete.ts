@@ -1,5 +1,5 @@
-import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
+import { Command } from 'commander';
 import prompts from 'prompts';
 
 export const deleteCommand = new Command('delete')

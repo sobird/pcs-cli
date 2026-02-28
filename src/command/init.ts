@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { existsSync } from 'node:fs';
 
-import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
+import { Command } from 'commander';
 import open from 'open';
 import prompts, { type PromptObject } from 'prompts';
 

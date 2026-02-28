@@ -1,5 +1,5 @@
-import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
+import { Command } from 'commander';
 
 import {
   initCommand,
@@ -18,7 +18,7 @@ import { link } from './utils';
 import { PCS_CONF, CREATE_APP_URL, APP_LIST_URL } from './utils/constants';
 import { readJSON } from './utils/json';
 
-declare module '@commander-js/extra-typings' {
+declare module 'commander' {
   interface Command {
     pcs: PCSClient;
   }

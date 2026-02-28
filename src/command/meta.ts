@@ -1,5 +1,5 @@
-import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
+import { Command } from 'commander';
 
 export const metaCommand = new Command('meta')
   .description('get path meta')

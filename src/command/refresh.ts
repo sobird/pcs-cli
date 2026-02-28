@@ -1,5 +1,5 @@
-import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
+import { Command } from 'commander';
 
 import { DeviceCodeGrant } from '../services/auth';
 import { PCS_CONF } from '../utils/constants';
