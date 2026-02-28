@@ -1,31 +1,8 @@
 {
   "name": "pcs-cli",
-  "description": "Baidu Personal Cloud Storage's Command Line Interface.",
-  "version": "1.6.1",
   "type": "module",
-  "bin": {
-    "pcs": "bin/dev.ts"
-  },
-  "scripts": {
-    "dev": "tsx bin/dev.ts",
-    "build": "tsup",
-    "test": "vitest",
-    "typecheck": "tsc --noEmit",
-    "prepublishOnly": "tsx scripts/prepublish.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sobird/pcs-cli.git"
-  },
-  "keywords": [
-    "pcs-cli",
-    "pcs",
-    "baidu",
-    "baidu-pcs"
-  ],
-  "bugs": {
-    "url": "https://github.com/sobird/pcs-cli/issues"
-  },
+  "version": "1.6.1",
+  "description": "Baidu Personal Cloud Storage's Command Line Interface.",
   "author": {
     "name": "sobird"
   },
@@ -38,6 +15,32 @@
   ],
   "readmeFilename": "README.md",
   "homepage": "https://github.com/sobird/pcs-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sobird/pcs-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sobird/pcs-cli/issues"
+  },
+  "keywords": [
+    "pcs-cli",
+    "pcs",
+    "baidu",
+    "baidu-pcs"
+  ],
+  "bin": {
+    "pcs": "bin/dev.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsx bin/dev.ts",
+    "build": "tsup",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "tsx scripts/prepublish.ts"
+  },
   "dependencies": {
     "@commander-js/extra-typings": "^14.0.0",
     "axios": "^1.13.2",
@@ -58,16 +61,14 @@
     "@types/node": "^20.9.0",
     "@types/progress": "^2.0.7",
     "@types/prompts": "^2.4.8",
-    "eslint-config-sobird": "^0.2.16",
+    "eslint": "^10.0.2",
+    "eslint-config-sobird": "^1.0.1",
     "husky": "^9.0.11",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.15"
   },
-  "files": [
-    "dist"
-  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   }

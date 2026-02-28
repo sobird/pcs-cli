@@ -15,12 +15,12 @@ npm i -g pcs-cli
 ## 使用
 在终端执行下面命令：
 
-```
+```bash
 pcs-cli [command] [options]
 ```
 
 ### 可用命令
-```
+```bash
 Commands:
   init [options]                          initialize baidu pcs
   refresh [options]                       refresh token
@@ -40,7 +40,7 @@ Commands:
 ```sh
 pcs init -n name -k key -s secret
 # 或者 根据提示填写应用的name key secret
-pcs init 
+pcs init
 # 如果本地已存在有效的access_token 再次运行该命令将会有如下提示
 Your access token has not expired (expiration date: 2023-12-10 22:49:14).
 ? Do you want to continue initializing? › (y/N)
@@ -144,7 +144,7 @@ pcs download
 删除远程文件
 
 ```sh
-pcs rm 
+pcs rm
 ```
 
 ### fetch
