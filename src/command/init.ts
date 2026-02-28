@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-param-reassign */
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 
 import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
 import open from 'open';
-import prompts, { PromptObject } from 'prompts';
+import prompts, { type PromptObject } from 'prompts';
 
 import { DeviceCodeGrant, ImplicitGrant } from '../services/auth';
 import { link } from '../utils';

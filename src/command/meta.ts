@@ -9,7 +9,7 @@ export const metaCommand = new Command('meta')
     try {
       const { list } = await pcs.meta(path);
       console.log(list[0]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const { response: { data } } = err;
       console.log(chalk.red(`error code ${data.error_code}: ${data.error_msg}`));
     }

@@ -1,9 +1,9 @@
 import {
   createReadStream, createWriteStream, statSync, mkdirSync, mkdtempSync,
-} from 'fs';
-import { tmpdir } from 'os';
-import { join, basename } from 'path';
-import { pipeline } from 'stream/promises';
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, basename } from 'node:path';
+import { pipeline } from 'node:stream/promises';
 
 export async function splitFile(path: string, chunkSize: number, outputDir: string = mkdtempSync(join(tmpdir(), 'splitFile-'))) {
   if (!path || typeof path !== 'string') {

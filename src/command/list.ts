@@ -11,13 +11,13 @@ export const listCommand = new Command('list')
   .option('-t --token <token>', 'access token', '')
   .action(async (path, options, { pcs }) => {
     try {
-      const ui = cliui({} as any);
+      const ui = cliui({} as unknown);
 
       const { list } = await pcs.list(path);
 
       list.map((item) => {
         const {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           server_mtime, size, server_filename, isdir,
         } = item;
         const filename = isdir === 1 ? chalk.blueBright(server_filename) : server_filename;
@@ -40,7 +40,7 @@ export const listCommand = new Command('list')
       });
 
       console.log(ui.toString());
-    } catch (err: any) {
+    } catch (err: unknown) {
       const { response: { data } } = err;
       console.error(chalk.red(`error code ${data.error_code} : ${data.error_msg}`));
     }

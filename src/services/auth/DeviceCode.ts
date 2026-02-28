@@ -51,24 +51,29 @@ export interface OAuthDeviceCodeResponse {
    * 设备码，可用于生成单次凭证 Access Token。
    */
   device_code: string;
+
   /**
    * 用户码。
    * 如果选择让用户输入 user code 方式，来引导用户授权，设备需要展示 user code 给用户。
    */
   user_code: string;
+
   /**
    * 用户输入 user code 进行授权的 url。
    */
   verification_url: string;
+
   /**
    * 二维码url，用户用手机等智能终端扫描该二维码完成授权。
    */
   qrcode_url: string;
+
   /**
    * device_code 的过期时间，单位：秒。
    * 到期后 device_code 不能换 Access Token。
    */
   expires_in: number;
+
   /**
    * device_code 换 Access Token 轮询间隔时间，单位：秒。
    * 轮询次数限制小于 expire_in/interval。
@@ -99,13 +104,11 @@ export class DeviceCodeGrant extends BaseOAuthClient {
     return data;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getAuthorizeURL(deviceCode: OAuthDeviceCodeResponse) {
     return `${deviceCode.verification_url}?code=${deviceCode.user_code}`;
   }
 
   async authorize(code: string) {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { client_id, client_secret, scope } = this.config;
 
     const { data } = await this.axios.get<OAuthTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {

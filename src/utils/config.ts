@@ -1,4 +1,4 @@
-import { statSync, promises as fs } from 'fs';
+import { statSync, promises as fs } from 'node:fs';
 
 import { readJSON, readJSONSync } from './json';
 
@@ -15,6 +15,7 @@ export async function readConf(path: string, expiresField = 'expires_in') {
     return null;
   }
   const expiresInfo = info[expiresField];
+
   // 如果不存在 expiresField 则认为长期有效
   if (!expiresInfo) {
     return info;
@@ -45,6 +46,7 @@ export function readConfSync(path: string, expiresField = 'expires_in') {
     return null;
   }
   const expiresInfo = info[expiresField];
+
   // 如果不存在 expiresField 则认为长期有效
   if (!expiresInfo) {
     return info;

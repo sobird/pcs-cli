@@ -18,11 +18,12 @@ export const refreshCommand = new Command('refresh')
 
     try {
       const refreshToken = await oauth.refreshToken(options.refreshToken);
+
       // 保存配置
       await writeJSON(PCS_CONF, { ...options, ...refreshToken });
 
       console.log(chalk.green('Successfully refreshed token'));
-    } catch (err: any) {
+    } catch (err: unknown) {
       const { response: { data } } = err;
       console.log(chalk.red(`OAuth error ${data.error} : ${data.error_description}`));
     }

@@ -1,6 +1,6 @@
-import { statSync } from 'fs';
-import os from 'os';
-import { join, sep } from 'path';
+import { statSync } from 'node:fs';
+import os from 'node:os';
+import { join, sep } from 'node:path';
 
 import { Command } from '@commander-js/extra-typings';
 import chalk from 'chalk';
@@ -30,7 +30,6 @@ export const uploadCommand = new Command('upload')
           const pieces = await splitFile(file, bytes, temp);
           const blocks = [];
 
-          // eslint-disable-next-line no-restricted-syntax
           for (const piece of pieces as string[]) {
             //
             // eslint-disable-next-line no-await-in-loop
@@ -45,7 +44,7 @@ export const uploadCommand = new Command('upload')
         console.log(`${chalk.blueBright('==>')} Uploading ${file}`);
         await pcs.upload(file, join(remote, file));
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       const { response: { data } } = err;
       console.log(`error code ${data.error_code} : ${data.error_msg}`);
     }

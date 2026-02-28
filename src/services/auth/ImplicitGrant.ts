@@ -10,16 +10,16 @@
  * sobird<i@sobird.me> at 2025/12/22 18:18:33 created.
  */
 
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { BaseOAuthClient, type OAuthClientConfig, type OAuthTokenResponse } from './OAuth';
 
 export interface OAuthImplicitGrantConfig extends OAuthClientConfig {
-  response_type: 'token',
+  response_type: 'token';
+
   /**
    * 授权页面展示样式。参见授权展示方式。
    */
   display?: string;
+
   /**
    * 重定向后会带上state参数。建议开发者利用state参数来防止CSRF攻击。
    */

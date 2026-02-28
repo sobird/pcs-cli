@@ -8,8 +8,7 @@
  * sobird<i@sobird.me> at 2025/12/21 9:54:50 created.
  */
 
-/* eslint-disable @typescript-eslint/naming-convention */
-import axios, { AxiosInstance } from 'axios';
+import axios, { type AxiosInstance } from 'axios';
 
 // OAuth客户端配置
 export interface OAuthClientConfig {
@@ -17,6 +16,7 @@ export interface OAuthClientConfig {
    * 固定值，值必须为device_code。
    */
   response_type: 'code' | 'token' | 'device_code';
+
   /**
    * 您应用的AppKey。
    */
@@ -43,8 +43,8 @@ export interface OAuthTokenResponse {
   expires_in: number;
   refresh_token?: string;
   access_token: string;
-  session_secret?: string,
-  session_key?: string,
+  session_secret?: string;
+  session_key?: string;
   scope: string;
 }
 
@@ -64,15 +64,18 @@ export interface RefreshTokenResponse {
   /**
    * 获取到的Access Token，Access Token是调用网盘开放API访问用户授权资源的凭证。
    */
-  access_token:string;
+  access_token: string;
+
   /**
    * Access Token的有效期，单位为秒。
    */
-  expires_in:number;
+  expires_in: number;
+
   /**
    * 用于刷新Access Token, 有效期为10年。
    */
-  refresh_token:string;
+  refresh_token: string;
+
   /**
    * Access Token 最终的访问权限，即用户的实际授权列表。
    */
@@ -95,7 +98,7 @@ export abstract class BaseOAuthClient {
    *
    * @param state
    */
-  abstract getAuthorizeURL(params?: Record<string, any>): string;
+  abstract getAuthorizeURL(params?: Record<string, unknown>): string;
 
   /**
    * 兑换访问令牌（用授权码换token）
@@ -109,12 +112,13 @@ export abstract class BaseOAuthClient {
    *
    * @param accessToken
    */
-  // eslint-disable-next-line class-methods-use-this
+
   async getUserInfo(access_token: string) {
     const { data } = await axios.get<OAuthUserInfo>('https://pan.baidu.com/rest/2.0/xpan/nas', {
       params: {
         method: 'uinfo',
         access_token,
+
         // vip_version,
       },
     });

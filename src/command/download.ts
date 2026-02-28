@@ -30,10 +30,11 @@ export const downloadCommand = new Command('download')
         }
 
         console.log(`${chalk.blueBright('==>')} Downloading ${chalk.green(localFilename)}`);
-        return pcs.download(currentValue.path, localFilename) as any;
+        return pcs.download(currentValue.path, localFilename) as unknown;
       }, Promise.resolve());
+
       // todo
-    } catch (err: any) {
+    } catch (err: unknown) {
       const { response: { data } } = err;
       console.log(chalk.red(`error code ${data.error_code || data.statusCode} : ${data.error_msg || data.statusMessage}`));
     }

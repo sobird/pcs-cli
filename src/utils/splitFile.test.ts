@@ -1,8 +1,8 @@
 import {
   mkdtempSync, writeFileSync, readFileSync, rmSync, statSync,
-} from 'fs';
-import { tmpdir } from 'os';
-import { join, basename } from 'path';
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, basename } from 'node:path';
 
 import { splitFile } from './splitFile';
 
@@ -97,7 +97,7 @@ describe('splitFile', () => {
     test('处理二进制文件', async () => {
       // 生成随机二进制数据
       const content = Buffer.from(
-        Array.from({ length: 500 }, () => { return Math.floor(Math.random() * 256); }),
+        Array.from({ length: 500 }, () => Math.floor(Math.random() * 256)),
       );
       const filePath = createTestFile(content, 'binary.dat');
       const chunkSize = 100;
@@ -228,11 +228,11 @@ describe('splitFile', () => {
         { name: 'concurrent3.bin', content: Buffer.alloc(900, 'Z') },
       ];
 
-      const filePaths = files.map((f) => { return createTestFile(f.content, f.name); });
+      const filePaths = files.map(f => createTestFile(f.content, f.name));
       const chunkSize = 200;
 
       const results = await Promise.all(
-        filePaths.map((path) => { return splitFile(path, chunkSize, testDir); }),
+        filePaths.map(path => splitFile(path, chunkSize, testDir)),
       );
 
       results.forEach((parts, index) => {

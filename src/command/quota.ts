@@ -20,7 +20,7 @@ export const quotaCommand = new Command('quota')
         quota: bytes(quota),
       });
       console.log('');
-    } catch (err: any) {
+    } catch (err: unknown) {
       const { response: { data } } = err;
       console.log(chalk.red`error code ${data.error_code} : ${data.error_msg}`);
     }

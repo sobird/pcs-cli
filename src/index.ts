@@ -25,6 +25,7 @@ declare module '@commander-js/extra-typings' {
 }
 
 const program = new Command(name)
+
   // .name(name)
   .description(`${chalk.bold('Baidu Personal Cloud Storage Scaffold')}.\n\nYou can get app key by visit ${chalk.blue.underline(link(CREATE_APP_URL, CREATE_APP_URL))}.\nIf you have already created an app, you can visit ${chalk.blue.underline(link(APP_LIST_URL, APP_LIST_URL))} and get it in your app's info.`)
   .version(version)

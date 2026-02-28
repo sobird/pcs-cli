@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 // scripts/prepublish.js
 import fs from 'node:fs';
 import path from 'node:path';

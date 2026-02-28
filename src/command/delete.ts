@@ -24,7 +24,7 @@ export const deleteCommand = new Command('delete')
 
     try {
       await pcs.delete(remote);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const { response: { data } } = err;
       console.log(chalk.red(`error code ${data.error_code} : ${data.error_msg}`));
     }

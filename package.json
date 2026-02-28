@@ -38,6 +38,8 @@
     "dev": "tsx bin/dev.ts",
     "build": "tsup",
     "test": "vitest",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "tsx scripts/prepublish.ts"
   },

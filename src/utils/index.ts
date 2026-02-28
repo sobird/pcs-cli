@@ -1,9 +1,8 @@
-/* eslint-disable no-param-reassign */
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
 import {
   createReadStream,
   readFileSync,
-} from 'fs';
+} from 'node:fs';
 
 export { link } from './link';
 export { splitFile } from './splitFile';

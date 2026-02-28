@@ -3,11 +3,11 @@
  *
  * sobird<i@sobird.me> at 2023/11/09 19:42:40 created.
  */
-import fs from 'fs';
-import https from 'https';
-import { dirname, join, relative } from 'path';
+import fs from 'node:fs';
+import https from 'node:https';
+import { dirname, join, relative } from 'node:path';
 
-import axios, { AxiosInstance } from 'axios';
+import axios, { type AxiosInstance } from 'axios';
 import Progress from 'progress';
 
 export interface PCSNode {
@@ -69,7 +69,7 @@ interface PCSQuotaResponse {
 }
 
 interface PCSMetaResponse {
-  list: [PCSMeta]
+  list: [PCSMeta];
   request_id: number;
 }
 
@@ -83,7 +83,7 @@ interface PcsFile {
 }
 
 interface PCSListResponse {
-  list: PcsFile[],
+  list: PcsFile[];
   request_id: number;
 }
 
@@ -221,11 +221,12 @@ export class PCSClient {
       complete: '=',
       incomplete: ' ',
       width: 40,
+
       // renderThrottle: 1,
       total: parseInt(totalLength, 10),
     });
 
-    data.on('data', (chunk: Buffer) => { return progressBar.tick(chunk.length); });
+    data.on('data', (chunk: Buffer) => progressBar.tick(chunk.length));
     data.pipe(writer);
 
     return new Promise<void>((resolve, reject) => {

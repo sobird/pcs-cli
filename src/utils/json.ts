@@ -1,7 +1,7 @@
 import {
   readFileSync, existsSync, mkdirSync, writeFileSync, promises as fs,
 } from 'node:fs';
-import path from 'path';
+import path from 'node:path';
 
 /**
  * 异步读取 JSON 文件
@@ -75,7 +75,7 @@ export async function writeJSON(filePath: string, data: unknown) {
  * @param {any} data    要写入的数据
  * @returns
  */
-export function writeJSONSync(filePath: string, data: any) {
+export function writeJSONSync(filePath: string, data: unknown) {
   try {
     const dir = path.dirname(filePath);
     if (!existsSync(dir)) {
