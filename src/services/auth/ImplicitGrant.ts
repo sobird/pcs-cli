@@ -27,7 +27,7 @@ export interface OAuthImplicitGrantConfig extends OAuthClientConfig {
 }
 
 export class ImplicitGrant extends BaseOAuthClient {
-  declare config: OAuthImplicitGrantConfig;
+  public declare config: OAuthImplicitGrantConfig;
 
   constructor(config: Omit<OAuthImplicitGrantConfig, 'client_secret' | 'response_type' | 'redirect_uri'>) {
     super({
@@ -37,14 +37,14 @@ export class ImplicitGrant extends BaseOAuthClient {
     });
   }
 
-  getAuthorizeURL(): string {
+  public getAuthorizeURL(): string {
     const { client_secret, ...params } = this.config;
     const searchParams = new URLSearchParams(params as unknown as Record<string, string>);
 
     return `https://openapi.baidu.com/oauth/2.0/authorize?${searchParams}`;
   }
 
-  async authorize(result: string): Promise<OAuthTokenResponse> {
+  public async authorize(result: string): Promise<OAuthTokenResponse> {
     let token: OAuthTokenResponse;
 
     if (result.startsWith('http')) {

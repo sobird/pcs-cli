@@ -46,7 +46,7 @@ const program = new Command(name)
         actionCommand.pcs = new PCSClient(actionCommand.getOptionValue('name') || config.name, actionCommand.getOptionValue('token') || config.access_token);
       }
     } catch (err) {
-      throw new Error(chalk.redBright('Please use the "pcs init" command to initialize'));
+      throw new Error(chalk.redBright('Please use the "pcs init" command to initialize'), { cause: err });
     }
   });
 

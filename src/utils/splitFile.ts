@@ -5,7 +5,11 @@ import { tmpdir } from 'node:os';
 import { join, basename } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 
-export async function splitFile(path: string, chunkSize: number, outputDir: string = mkdtempSync(join(tmpdir(), 'splitFile-'))) {
+export async function splitFile(
+  path: string,
+  chunkSize: number,
+  outputDir: string = mkdtempSync(join(tmpdir(), 'splitFile-')),
+): Promise<string[]> {
   if (!path || typeof path !== 'string') {
     throw new TypeError('path must be a non-empty string');
   }
@@ -23,6 +27,7 @@ export async function splitFile(path: string, chunkSize: number, outputDir: stri
 
   mkdirSync(outputDir, { recursive: true });
 
+  // eslint-disable-next-line no-restricted-syntax
   for (let start = 0; start < size; start += chunkSize) {
     const end = Math.min(start + chunkSize - 1, size - 1);
     const partPath = join(outputDir, `${fileName}.${parts.length + 1}`);

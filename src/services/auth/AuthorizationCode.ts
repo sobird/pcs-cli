@@ -59,7 +59,7 @@ export interface OAuthAuthorizationCodeConfig extends OAuthClientConfig {
 }
 
 export class AuthorizationCodeGrant extends BaseOAuthClient {
-  declare config: OAuthAuthorizationCodeConfig;
+  public declare config: OAuthAuthorizationCodeConfig;
 
   constructor(config: Omit<OAuthAuthorizationCodeConfig, 'response_type' | 'redirect_uri' | 'scope'>) {
     super({
@@ -70,7 +70,7 @@ export class AuthorizationCodeGrant extends BaseOAuthClient {
   }
 
   // 获取授权URL
-  getAuthorizeURL(): string {
+  public getAuthorizeURL(): string {
     const { client_secret, ...params } = this.config;
     const searchParams = new URLSearchParams(params as unknown as Record<string, string>);
 
@@ -90,7 +90,7 @@ export class AuthorizationCodeGrant extends BaseOAuthClient {
    * @param code
    * @returns
    */
-  async authorize(code: string) {
+  public async authorize(code: string): Promise<OAuthTokenResponse> {
     const {
       client_id, client_secret, redirect_uri, scope,
     } = this.config;
@@ -108,7 +108,7 @@ export class AuthorizationCodeGrant extends BaseOAuthClient {
   }
 
   // 处理回调（用于Web服务器）
-  async handleCallback(url: string) {
+  public async handleCallback(url: string): Promise<OAuthTokenResponse> {
     const urlObj = new URL(url);
     const code = urlObj.searchParams.get('code');
     const error = urlObj.searchParams.get('error');

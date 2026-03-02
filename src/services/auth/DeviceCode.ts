@@ -46,7 +46,7 @@ export interface OAuthDeviceCodeConfig extends OAuthClientConfig {
   response_type: 'device_code';
 }
 
-export interface OAuthDeviceCodeResponse {
+export interface OAuthDeviceCodeResponse extends Record<string, unknown> {
   /**
    * 设备码，可用于生成单次凭证 Access Token。
    */
@@ -82,7 +82,7 @@ export interface OAuthDeviceCodeResponse {
 }
 
 export class DeviceCodeGrant extends BaseOAuthClient {
-  declare config: OAuthDeviceCodeConfig;
+  public declare config: OAuthDeviceCodeConfig;
 
   constructor(config: Omit<OAuthDeviceCodeConfig, 'response_type' | 'redirect_uri'>) {
     super({
@@ -92,7 +92,7 @@ export class DeviceCodeGrant extends BaseOAuthClient {
   }
 
   // 获取设备码
-  async getDeviceCode() {
+  public async getDeviceCode(): Promise<OAuthDeviceCodeResponse> {
     const { data } = await this.axios.get<OAuthDeviceCodeResponse>('https://openapi.baidu.com/oauth/2.0/device/code', {
       params: {
         response_type: 'device_code',
@@ -104,11 +104,11 @@ export class DeviceCodeGrant extends BaseOAuthClient {
     return data;
   }
 
-  getAuthorizeURL(deviceCode: OAuthDeviceCodeResponse) {
+  public getAuthorizeURL(deviceCode: OAuthDeviceCodeResponse): string {
     return `${deviceCode.verification_url}?code=${deviceCode.user_code}`;
   }
 
-  async authorize(code: string) {
+  public async authorize(code: string): Promise<OAuthTokenResponse> {
     const { client_id, client_secret, scope } = this.config;
 
     const { data } = await this.axios.get<OAuthTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {

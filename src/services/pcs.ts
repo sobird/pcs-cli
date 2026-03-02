@@ -61,6 +61,18 @@ export interface PCSMeta extends PCSNode {
   videotag: number;
 }
 
+// 用户信息
+export interface OAuthUserInfo {
+  avatar_url: string;
+  baidu_name: string;
+  errmsg: string;
+  errno: number;
+  netdisk_name: string;
+  request_id: string;
+  uk: number;
+  vip_type: number;
+}
+
 interface PCSQuotaResponse {
   quota: number;
   request_id: number;
@@ -102,13 +114,35 @@ interface PCSUploadResponse {
 }
 
 export class PCSClient {
+  public get rootdir(): string {
+    return join('/apps', this.name);
+  }
+
   protected axios: AxiosInstance;
 
-  constructor(public name: string, public token: string) {
+  constructor(public readonly name: string, public readonly token: string) {
     this.axios = axios.create({
       timeout: 10000,
       baseURL: 'https://pcs.baidu.com/rest/2.0',
     });
+  }
+
+  /**
+   * 获取用户信息（用访问令牌获取用户资料）
+   *
+   * @param accessToken
+   */
+
+  public async userInfo(): Promise<OAuthUserInfo> {
+    const { data } = await axios.get<OAuthUserInfo>('https://pan.baidu.com/rest/2.0/xpan/nas', {
+      params: {
+        method: 'uinfo',
+        vip_version: 2,
+        access_token: this.token,
+      },
+    });
+
+    return data;
   }
 
   /**
@@ -117,7 +151,7 @@ export class PCSClient {
    * @param access_token
    * @returns
    */
-  async quota() {
+  public async quota(): Promise<PCSQuotaResponse> {
     const { data } = await this.axios.get<PCSQuotaResponse>('/pcs/quota', {
       params: {
         method: 'info',
@@ -134,7 +168,7 @@ export class PCSClient {
    * @param path
    * @returns
    */
-  async meta(path: string) {
+  public async meta(path: string): Promise<PCSMetaResponse> {
     const { data } = await this.axios.get<PCSMetaResponse>('/pcs/file', {
       params: {
         method: 'meta',
@@ -152,7 +186,7 @@ export class PCSClient {
    * @param path
    * @returns
    */
-  async list(path: string) {
+  public async list(path: string): Promise<PCSListResponse> {
     const { data } = await this.axios.get<PCSListResponse>('/pcs/file', {
       params: {
         method: 'list',
@@ -164,7 +198,7 @@ export class PCSClient {
   }
 
   /** 删除文件 */
-  async delete(path: string) {
+  public async delete(path: string): Promise<PCSDeleteResponse> {
     const { data } = await axios.get<PCSDeleteResponse>('/pcs/file', {
       params: {
         method: 'delete',
@@ -184,7 +218,8 @@ export class PCSClient {
    * @param save_path
    * @returns
    */
-  async fetch(source_url: string, save_path: string) {
+  // eslint-disable-next-line camelcase
+  public async fetch(source_url: string, save_path: string): Promise<unknown> {
     const { data } = await axios.get('/pcs/services/cloud_dl', {
       params: {
         method: 'add_task',
@@ -203,7 +238,7 @@ export class PCSClient {
    * @param local
    * @returns
    */
-  async download(path: string, local: string) {
+  public async download(path: string, local: string): Promise<void> {
     fs.mkdirSync(dirname(local), { recursive: true });
     const writer = fs.createWriteStream(local);
     const { data, headers } = await this.axios.get('/pcs/file', {
@@ -236,7 +271,7 @@ export class PCSClient {
   }
 
   /** 上传文件 */
-  async upload(localPath: string, path: string, ondup = 'overwrite', type?: string): Promise<PCSUploadResponse> {
+  public async upload(localPath: string, path: string, ondup = 'overwrite', type?: string): Promise<PCSUploadResponse> {
     let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${this.token}&path=${encodeURIComponent(this.resolve(path))}&ondup=${ondup}`;
     if (type) {
       uploadPath = `${uploadPath}&type=${type}`;
@@ -293,7 +328,7 @@ export class PCSClient {
    * @param param
    * @returns
    */
-  async createSuperFile(path: string, param: object) {
+  public async createSuperFile(path: string, param: object): Promise<unknown> {
     const { data } = await axios.get('/pcs/file', {
       params: {
         method: 'createsuperfile',
@@ -305,15 +340,11 @@ export class PCSClient {
     return data;
   }
 
-  get rootdir() {
-    return join('/apps', this.name);
-  }
-
-  resolve(path: string) {
+  public resolve(path: string): string {
     return join(this.rootdir, path);
   }
 
-  normalize(path: string) {
+  public normalize(path: string): string {
     // const pathPrefix = join('/apps', this.name);
     // if (path.indexOf(pathPrefix) === 0) {
     //   return path.substring(pathPrefix.length, path.length);

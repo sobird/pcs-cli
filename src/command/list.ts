@@ -11,7 +11,7 @@ export const listCommand = new Command('list')
   .option('-t --token <token>', 'access token', '')
   .action(async (path, options, { pcs }) => {
     try {
-      const ui = cliui({} as unknown);
+      const ui = cliui({});
 
       const { list } = await pcs.list(path);
 
@@ -27,7 +27,7 @@ export const listCommand = new Command('list')
           width: 22,
           padding: [0, 0, 0, 0],
         }, {
-          text: bytes(size) as string,
+          text: bytes(size)!,
           width: 15,
           align: 'right',
           padding: [0, 2, 0, 0],

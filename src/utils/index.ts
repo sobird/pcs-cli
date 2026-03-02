@@ -7,7 +7,7 @@ import {
 export { link } from './link';
 export { splitFile } from './splitFile';
 
-export function md5File(file: string, callback: typeof Function) {
+export function md5File(file: string, callback: typeof Function): void {
   const hash = createHash('md5');
   const rs = createReadStream(file);
   rs.on('data', (chunk) => {
@@ -18,7 +18,7 @@ export function md5File(file: string, callback: typeof Function) {
   });
 }
 
-export function md5FileSync(file: string) {
+export function md5FileSync(file: string): string {
   const hash = createHash('md5');
   const data = readFileSync(file);
   hash.update(data);

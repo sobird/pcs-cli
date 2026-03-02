@@ -9,18 +9,18 @@ import path from 'node:path';
  * @param {string} filePath    JSON 文件路径
  * @returns    解析后的 JSON 对象
  */
-export async function readJSON(filePath: string) {
+export async function readJSON(filePath: string): Promise<unknown> {
   try {
     return JSON.parse(await fs.readFile(filePath, 'utf8'));
   } catch (error) {
     if (error instanceof Error && 'code' in error) {
       if (error.code === 'ENOENT') {
-        throw new Error(`文件不存在: ${filePath}`);
+        throw new Error(`文件不存在: ${filePath}`, { cause: error });
       }
     }
 
     if (error instanceof SyntaxError) {
-      throw new Error(`JSON 格式错误: ${error.message}`);
+      throw new Error(`JSON 格式错误: ${error.message}`, { cause: error });
     }
     throw error;
   }
@@ -32,18 +32,18 @@ export async function readJSON(filePath: string) {
  * @param {string} filePath    JSON 文件路径
  * @returns     解析后的 JSON 对象
  */
-export function readJSONSync(filePath: string) {
+export function readJSONSync(filePath: string): unknown {
   try {
     return JSON.parse(readFileSync(filePath, 'utf8'));
   } catch (error) {
     if (error instanceof Error && 'code' in error) {
       if (error.code === 'ENOENT') {
-        throw new Error(`文件不存在: ${filePath}`);
+        throw new Error(`文件不存在: ${filePath}`, { cause: error });
       }
     }
 
     if (error instanceof SyntaxError) {
-      throw new Error(`JSON 格式错误: ${error.message}`);
+      throw new Error(`JSON 格式错误: ${error.message}`, { cause: error });
     }
     throw error;
   }
@@ -56,7 +56,7 @@ export function readJSONSync(filePath: string) {
  * @param {any} data    要写入的数据
  * @returns
  */
-export async function writeJSON(filePath: string, data: unknown) {
+export async function writeJSON(filePath: string, data: unknown): Promise<void> {
   try {
     const dir = path.dirname(filePath);
     await fs.mkdir(dir, { recursive: true });
@@ -64,7 +64,7 @@ export async function writeJSON(filePath: string, data: unknown) {
     await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8');
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`写入文件失败: ${error.message}`);
+      throw new Error(`写入文件失败: ${error.message}`, { cause: error });
     }
   }
 }
@@ -75,7 +75,7 @@ export async function writeJSON(filePath: string, data: unknown) {
  * @param {any} data    要写入的数据
  * @returns
  */
-export function writeJSONSync(filePath: string, data: unknown) {
+export function writeJSONSync(filePath: string, data: unknown): void {
   try {
     const dir = path.dirname(filePath);
     if (!existsSync(dir)) {
@@ -85,7 +85,7 @@ export function writeJSONSync(filePath: string, data: unknown) {
     writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`写入文件失败: ${error.message}`);
+      throw new Error(`写入文件失败: ${error.message}`, { cause: error });
     }
   }
 }
@@ -96,7 +96,7 @@ export function writeJSONSync(filePath: string, data: unknown) {
  * @param {Function} updater    更新函数，接收当前数据并返回新数据
  * @returns    更新后的数据
  */
-export async function updateJSON(filePath: string, updater: Function) {
+export async function updateJSON(filePath: string, updater: (data: unknown) => unknown): Promise<unknown> {
   const data = await readJSON(filePath);
   const updatedData = updater(data);
   await writeJSON(filePath, updatedData);
@@ -109,7 +109,7 @@ export async function updateJSON(filePath: string, updater: Function) {
  * @param {Function} updater    更新函数，接收当前数据并返回新数据
  * @returns     更新后的数据
  */
-export function updateJSONSync(filePath: string, updater: Function) {
+export function updateJSONSync(filePath: string, updater: (data: unknown) => unknown): unknown {
   const data = readJSONSync(filePath);
   const updatedData = updater(data);
   writeJSONSync(filePath, updatedData);

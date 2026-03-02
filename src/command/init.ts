@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { existsSync } from 'node:fs';
 
 import chalk from 'chalk';
@@ -11,7 +10,7 @@ import { link } from '../utils';
 import { PCS_CONF } from '../utils/constants';
 import { writeJSON } from '../utils/json';
 
-export async function getAccessTokenByImplicitGrant(options: ReturnType<typeof initCommand.opts>) {
+async function getAccessTokenByImplicitGrant(options: ReturnType<typeof initCommand.opts>) {
   const oauth = new ImplicitGrant({
     client_id: options.key,
   });
@@ -25,15 +24,14 @@ export async function getAccessTokenByImplicitGrant(options: ReturnType<typeof i
   console.log('3. Grab the access_token part, take only the part between "access_token=" and the next "&" symbol (without quotes).');
   console.log('4. Copy it and paste here, then press Enter.');
 
-  const { access_token } = await prompts({
+  const { accessToken } = await prompts({
     type: 'text',
-    name: 'access_token',
-    message: 'access_token',
-  });
+    name: 'accessToken',
+    message: 'access token',
+  }) as { accessToken: string };
 
-  if (access_token) {
-    // 保存配置
-    await writeJSON(PCS_CONF, { ...options, access_token });
+  if (accessToken !== '') {
+    await writeJSON(PCS_CONF, { ...options, access_token: accessToken });
   }
 }
 
@@ -58,7 +56,7 @@ async function getAccessTokenByDeviceCode(options: ReturnType<typeof initCommand
     name: 'confirm',
     message: 'Press Enter to continue',
     initial: true,
-  });
+  }) as { confirm: boolean };
 
   if (confirm) {
     const tokens = await oauth.authorize(deviceCode.device_code);
@@ -85,7 +83,8 @@ export const initCommand = new Command('init')
         name: 'confirm',
         message: 'Can you confirm?',
         initial: false,
-      });
+      }) as { confirm: boolean };
+
       if (!confirm) {
         return;
       }
@@ -93,7 +92,7 @@ export const initCommand = new Command('init')
 
     const questions: PromptObject[] = [];
     (['name', 'key', 'secret'] as const).forEach((item) => {
-      if (!options[item]) {
+      if (options[item] === '') {
         questions.push({
           type: 'text',
           name: item,
@@ -101,17 +100,18 @@ export const initCommand = new Command('init')
         });
       }
     });
-    options = { ...options, ...await prompts(questions) };
 
-    if (!options.key) {
+    Object.assign(options, await prompts(questions));
+
+    if (options.key === '') {
       return;
     }
 
-    if (options.secret) {
-      // 设备码模式授权
-      await getAccessTokenByDeviceCode(options);
-    } else {
+    if (options.secret === '') {
       // 简化模式授权
       await getAccessTokenByImplicitGrant(options);
+    } else {
+      // 设备码模式授权
+      await getAccessTokenByDeviceCode(options);
     }
   });

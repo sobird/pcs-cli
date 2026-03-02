@@ -48,18 +48,6 @@ export interface OAuthTokenResponse {
   scope: string;
 }
 
-// 用户信息
-export interface OAuthUserInfo {
-  avatar_url: string;
-  baidu_name: string;
-  errmsg: string;
-  errno: number;
-  netdisk_name: string;
-  request_id: string;
-  uk: number;
-  vip_type: number;
-}
-
 export interface RefreshTokenResponse {
   /**
    * 获取到的Access Token，Access Token是调用网盘开放API访问用户授权资源的凭证。
@@ -85,7 +73,7 @@ export interface RefreshTokenResponse {
 export abstract class BaseOAuthClient {
   protected axios: AxiosInstance;
 
-  constructor(public config: OAuthClientConfig) {
+  constructor(public readonly config: OAuthClientConfig) {
     this.config = {
       scope: 'basic,netdisk',
       ...config,
@@ -98,40 +86,21 @@ export abstract class BaseOAuthClient {
    *
    * @param state
    */
-  abstract getAuthorizeURL(params?: Record<string, unknown>): string;
+  public abstract getAuthorizeURL(params?: Record<string, unknown>): string;
 
   /**
    * 兑换访问令牌（用授权码换token）
    *
    * @param code
    */
-  abstract authorize(code: string): Promise<OAuthTokenResponse>;
-
-  /**
-   * 获取用户信息（用访问令牌获取用户资料）
-   *
-   * @param accessToken
-   */
-
-  async getUserInfo(access_token: string) {
-    const { data } = await axios.get<OAuthUserInfo>('https://pan.baidu.com/rest/2.0/xpan/nas', {
-      params: {
-        method: 'uinfo',
-        access_token,
-
-        // vip_version,
-      },
-    });
-
-    return data;
-  }
+  public abstract authorize(code: string): Promise<OAuthTokenResponse>;
 
   /**
    * 通用：刷新令牌
    *
    * @param refreshToken
    */
-  async refreshToken(refresh_token: string) {
+  public async refreshToken(refresh_token: string): Promise<RefreshTokenResponse> {
     const { client_secret, client_id } = this.config;
 
     const { data } = await axios.get<RefreshTokenResponse>('https://openapi.baidu.com/oauth/2.0/token', {

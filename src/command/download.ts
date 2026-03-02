@@ -21,21 +21,19 @@ export const downloadCommand = new Command('download')
       //   } as any);
       // }
 
-      list.reduce(async (previousValue, currentValue) => {
-        await previousValue;
-        const localFilename = join(local, pcs.normalize(currentValue.path));
+      for (const file of list) {
+        const localFilename = join(local, pcs.normalize(file.path));
 
-        if (currentValue.isdir === 1) {
-          return Promise.resolve();
+        if (file.isdir === 1) {
+          return;
         }
 
         console.log(`${chalk.blueBright('==>')} Downloading ${chalk.green(localFilename)}`);
-        return pcs.download(currentValue.path, localFilename) as unknown;
-      }, Promise.resolve());
-
-      // todo
+        // eslint-disable-next-line no-await-in-loop
+        await pcs.download(file.path, localFilename);
+      }
     } catch (err: unknown) {
       const { response: { data } } = err;
-      console.log(chalk.red(`error code ${data.error_code || data.statusCode} : ${data.error_msg || data.statusMessage}`));
+      console.log(chalk.red(`error code ${data.error_code ?? data.statusCode} : ${data.error_msg ?? data.statusMessage}`));
     }
   });

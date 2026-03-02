@@ -44,7 +44,7 @@ export const uploadCommand = new Command('upload')
         console.log(`${chalk.blueBright('==>')} Uploading ${file}`);
         await pcs.upload(file, join(remote, file));
       }
-    } catch (err: unknown) {
+    } catch (err) {
       const { response: { data } } = err;
       console.log(`error code ${data.error_code} : ${data.error_msg}`);
     }

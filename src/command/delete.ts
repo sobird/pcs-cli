@@ -15,7 +15,7 @@ export const deleteCommand = new Command('delete')
         name: 'confirm',
         message: 'Are you sure you want to continue?',
         initial: false,
-      });
+      }) as { confirm: boolean };
 
       if (!confirm) {
         return;
@@ -23,7 +23,7 @@ export const deleteCommand = new Command('delete')
     }
 
     try {
-      await pcs.delete(remote);
+      await pcs['delete'](remote);
     } catch (err: unknown) {
       const { response: { data } } = err;
       console.log(chalk.red(`error code ${data.error_code} : ${data.error_msg}`));

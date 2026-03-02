@@ -9,7 +9,7 @@ import { readJSON, readJSONSync } from './json';
  * @param expiresField
  * @returns
  */
-export async function readConf(path: string, expiresField = 'expires_in') {
+export async function readConf(path: string, expiresField = 'expires_in'): Promise<unknown> {
   const info = await readJSON(path);
   if (!info) {
     return null;
@@ -40,7 +40,7 @@ export async function readConf(path: string, expiresField = 'expires_in') {
  * @param expiresField
  * @returns
  */
-export function readConfSync(path: string, expiresField = 'expires_in') {
+export function readConfSync(path: string, expiresField = 'expires_in'): unknown {
   const info = readJSONSync(path);
   if (!info) {
     return null;

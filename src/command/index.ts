@@ -1,9 +1,9 @@
-export { initCommand } from './init';
-export { listCommand } from './list';
-export { metaCommand } from './meta';
-export { quotaCommand } from './quota';
-export { fetchCommand } from './fetch';
-export { deleteCommand } from './delete';
-export { uploadCommand } from './upload';
-export { refreshCommand } from './refresh';
-export { downloadCommand } from './download';
+export * from './init';
+export * from './list';
+export * from './meta';
+export * from './quota';
+export * from './fetch';
+export * from './delete';
+export * from './upload';
+export * from './refresh';
+export * from './download';
