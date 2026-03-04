@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/sobird/pcs-cli/compare/v1.7.0...v1.7.1) (2026-03-04)
+
+
+### Bug Fixes
+
+* error: Multiple versions of pnpm specified ([0c1a424](https://github.com/sobird/pcs-cli/commit/0c1a424f88210dd91115154fe04d5a0cbbb261e6))
+
 ## [1.7.0](https://github.com/sobird/pcs-cli/compare/v1.6.1...v1.7.0) (2026-03-04)
 
 
