@@ -30,7 +30,7 @@ export interface OAuthClientConfig {
   /**
    * 授权后要回调的地址URL
    */
-  redirect_uri?: 'oob' | string;
+  redirect_uri?: 'oob' | string & {};
 
   /**
    * 固定值，值必须为basic,netdisk。
@@ -45,7 +45,7 @@ export interface OAuthTokenResponse {
   access_token: string;
   session_secret?: string;
   session_key?: string;
-  scope: string;
+  scope?: string;
 }
 
 export interface RefreshTokenResponse {

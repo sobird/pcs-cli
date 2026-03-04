@@ -6,22 +6,48 @@ import path from 'node:path';
 /**
  * 异步读取 JSON 文件
  *
- * @param {string} filePath    JSON 文件路径
- * @returns    解析后的 JSON 对象
+ * @param {string} filePath JSON 文件路径
+ * @returns 解析后的 JSON 对象
  */
-export async function readJSON(filePath: string): Promise<unknown> {
+// export async function readJSON(filePath: string): Promise<unknown> {
+//   try {
+//     return JSON.parse(await fs.readFile(filePath, 'utf8'));
+//   } catch (error) {
+//     if (error instanceof Error && 'code' in error) {
+//       if (error.code === 'ENOENT') {
+//         throw new Error(`文件不存在: ${filePath}`, { cause: error });
+//       }
+//     }
+
+//     if (error instanceof SyntaxError) {
+//       throw new Error(`JSON 格式错误: ${error.message}`, { cause: error });
+//     }
+//     throw error;
+//   }
+// }
+
+/**
+ * 读取并解析 JSON 文件
+ * @template T 预期的返回类型
+ */
+export async function readJSON<T = unknown>(filePath: string): Promise<T> {
   try {
-    return JSON.parse(await fs.readFile(filePath, 'utf8'));
+    const content = await fs.readFile(filePath, 'utf8');
+
+    // JSON.parse 返回 any，这里将其断言为 T
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+    return JSON.parse(content) as T;
   } catch (error) {
-    if (error instanceof Error && 'code' in error) {
-      if (error.code === 'ENOENT') {
-        throw new Error(`文件不存在: ${filePath}`, { cause: error });
-      }
+    // 处理文件不存在的情况 (Node.js 原生错误通常带有 code)
+    // 使用类型守卫处理特定的系统错误
+    if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
+      throw new Error(`文件不存在: ${filePath}`, { cause: error });
     }
 
     if (error instanceof SyntaxError) {
       throw new Error(`JSON 格式错误: ${error.message}`, { cause: error });
     }
+
     throw error;
   }
 }

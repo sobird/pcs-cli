@@ -1,3 +1,4 @@
+import { isAxiosError } from 'axios';
 import bytes from 'bytes';
 import chalk from 'chalk';
 import { Command } from 'commander';
@@ -20,8 +21,10 @@ export const quotaCommand = new Command('quota')
         quota: bytes(quota),
       });
       console.log('');
-    } catch (err: unknown) {
-      const { response: { data } } = err;
-      console.log(chalk.red`error code ${data.error_code} : ${data.error_msg}`);
+    } catch (error) {
+      if (isAxiosError<{ error_code: string; error_msg: string }>(error)) {
+        const { response: { data } = {} } = error;
+        console.log(chalk.red(`error code ${data?.error_code} : ${data?.error_msg}`));
+      }
     }
   });

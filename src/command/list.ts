@@ -1,3 +1,4 @@
+import { isAxiosError } from 'axios';
 import bytes from 'bytes';
 import chalk from 'chalk';
 import cliui from 'cliui';
@@ -8,10 +9,12 @@ export const listCommand = new Command('list')
   .description('list directory contents')
   .argument('[path]', 'path', '/')
   .alias('ll')
-  .option('-t --token <token>', 'access token', '')
+  .option('-t --token <token>', 'access token')
   .action(async (path, options, { pcs }) => {
     try {
       const ui = cliui({});
+
+      console.log('pcs', pcs);
 
       const { list } = await pcs.list(path);
 
@@ -27,7 +30,7 @@ export const listCommand = new Command('list')
           width: 22,
           padding: [0, 0, 0, 0],
         }, {
-          text: bytes(size)!,
+          text: bytes(size) ?? '',
           width: 15,
           align: 'right',
           padding: [0, 2, 0, 0],
@@ -40,8 +43,10 @@ export const listCommand = new Command('list')
       });
 
       console.log(ui.toString());
-    } catch (err: unknown) {
-      const { response: { data } } = err;
-      console.error(chalk.red(`error code ${data.error_code} : ${data.error_msg}`));
+    } catch (error) {
+      if (isAxiosError<{ error_code: string; error_msg: string }>(error)) {
+        const { response: { data } = {} } = error;
+        console.log(chalk.red(`error code ${data?.error_code} : ${data?.error_msg}`));
+      }
     }
   });

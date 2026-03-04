@@ -1,5 +1,6 @@
 import { join, sep } from 'node:path/posix';
 
+import { isAxiosError } from 'axios';
 import chalk from 'chalk';
 import { Command } from 'commander';
 
@@ -8,7 +9,7 @@ export const downloadCommand = new Command('download')
   .description('download remote file')
   .argument('[remote]', 'remote path', sep)
   .argument('[local]', 'local path', '.')
-  .option('-t --token <token>', 'access token', '')
+  .option('-t --token <token>', 'access token')
   .action(async (remote, local, options, { pcs }) => {
     try {
       const { list } = await pcs.list(remote);
@@ -32,8 +33,10 @@ export const downloadCommand = new Command('download')
         // eslint-disable-next-line no-await-in-loop
         await pcs.download(file.path, localFilename);
       }
-    } catch (err: unknown) {
-      const { response: { data } } = err;
-      console.log(chalk.red(`error code ${data.error_code ?? data.statusCode} : ${data.error_msg ?? data.statusMessage}`));
+    } catch (error) {
+      if (isAxiosError<{ error_code: string; statusCode: string; error_msg: string; statusMessage: string }>(error)) {
+        const { response: { data } = {} } = error;
+        console.log(chalk.red(`error code ${data?.error_code ?? data?.statusCode} : ${data?.error_msg ?? data?.statusMessage}`));
+      }
     }
   });

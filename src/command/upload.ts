@@ -1,7 +1,9 @@
+/* eslint-disable no-await-in-loop */
 import { statSync } from 'node:fs';
 import os from 'node:os';
 import { join, sep } from 'node:path';
 
+import { isAxiosError } from 'axios';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import { glob } from 'glob';
@@ -23,16 +25,15 @@ export const uploadCommand = new Command('upload')
     const temp = join(os.tmpdir(), 'pcs-cli');
 
     try {
-      for await (const file of files) {
+      // todo: 使用 p-limit 并行限流处理
+      for (const file of files) {
         const fileStat = statSync(file);
         if (Number.isInteger(bytes) && fileStat.size > bytes) {
           // 分片上传
           const pieces = await splitFile(file, bytes, temp);
           const blocks = [];
 
-          for (const piece of pieces as string[]) {
-            //
-            // eslint-disable-next-line no-await-in-loop
+          for (const piece of pieces) {
             const { md5 } = await pcs.upload(piece, '', 'overwrite', 'tmpfile');
             blocks.push(md5);
           }
@@ -44,8 +45,10 @@ export const uploadCommand = new Command('upload')
         console.log(`${chalk.blueBright('==>')} Uploading ${file}`);
         await pcs.upload(file, join(remote, file));
       }
-    } catch (err) {
-      const { response: { data } } = err;
-      console.log(`error code ${data.error_code} : ${data.error_msg}`);
+    } catch (error) {
+      if (isAxiosError<{ error_code: string; error_msg: string }>(error)) {
+        const { response: { data } = {} } = error;
+        console.log(chalk.red(`error code ${data?.error_code} : ${data?.error_msg}`));
+      }
     }
   });

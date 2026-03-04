@@ -36,14 +36,23 @@ const program = new Command(name)
     }
 
     try {
-      const config = await readJSON(PCS_CONF);
+      const config = await readJSON<
+      { key: string;
+        name: string;
+        secret: string;
+        access_token: string;
+        refresh_token: string; }>(PCS_CONF);
       if (actionCommandName === 'refresh') {
-        actionCommand.setOptionValue('key', actionCommand.getOptionValue('key') || config.key);
-        actionCommand.setOptionValue('secret', actionCommand.getOptionValue('secret') || config.secret);
-        actionCommand.setOptionValue('refreshToken', actionCommand.getOptionValue('refreshToken') || config.refresh_token);
+        actionCommand.setOptionValue('key', actionCommand.getOptionValue('key') ?? config.key);
+        actionCommand.setOptionValue('secret', actionCommand.getOptionValue('secret') ?? config.secret);
+        actionCommand.setOptionValue('refreshToken', actionCommand.getOptionValue('refreshToken') ?? config.refresh_token);
       } else {
-        // eslint-disable-next-line no-param-reassign
-        actionCommand.pcs = new PCSClient(actionCommand.getOptionValue('name') || config.name, actionCommand.getOptionValue('token') || config.access_token);
+        actionCommand.pcs = new PCSClient(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+          (actionCommand.getOptionValue('name') as string | undefined) ?? config.name,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+          (actionCommand.getOptionValue('token') as string | undefined) ?? config.access_token,
+        );
       }
     } catch (err) {
       throw new Error(chalk.redBright('Please use the "pcs init" command to initialize'), { cause: err });

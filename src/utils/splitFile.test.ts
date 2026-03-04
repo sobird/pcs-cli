@@ -232,7 +232,7 @@ describe('splitFile', () => {
       const chunkSize = 200;
 
       const results = await Promise.all(
-        filePaths.map(path => splitFile(path, chunkSize, testDir)),
+        filePaths.map(async path => splitFile(path, chunkSize, testDir)),
       );
 
       results.forEach((parts, index) => {

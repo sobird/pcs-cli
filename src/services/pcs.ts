@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /**
  * Baidu Personal Cloud Storage Services
  *
@@ -218,7 +222,7 @@ export class PCSClient {
    * @param save_path
    * @returns
    */
-  // eslint-disable-next-line camelcase
+
   public async fetch(source_url: string, save_path: string): Promise<unknown> {
     const { data } = await axios.get('/pcs/services/cloud_dl', {
       params: {
@@ -261,7 +265,9 @@ export class PCSClient {
       total: parseInt(totalLength, 10),
     });
 
-    data.on('data', (chunk: Buffer) => progressBar.tick(chunk.length));
+    data.on('data', (chunk: Buffer) => {
+      progressBar.tick(chunk.length);
+    });
     data.pipe(writer);
 
     return new Promise<void>((resolve, reject) => {
@@ -273,7 +279,7 @@ export class PCSClient {
   /** 上传文件 */
   public async upload(localPath: string, path: string, ondup = 'overwrite', type?: string): Promise<PCSUploadResponse> {
     let uploadPath = `/rest/2.0/pcs/file?method=upload&access_token=${this.token}&path=${encodeURIComponent(this.resolve(path))}&ondup=${ondup}`;
-    if (type) {
+    if (Boolean(type)) {
       uploadPath = `${uploadPath}&type=${type}`;
     }
     const fileStat = fs.statSync(localPath);

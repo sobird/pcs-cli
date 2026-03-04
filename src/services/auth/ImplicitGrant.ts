@@ -39,12 +39,13 @@ export class ImplicitGrant extends BaseOAuthClient {
 
   public getAuthorizeURL(): string {
     const { client_secret, ...params } = this.config;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     const searchParams = new URLSearchParams(params as unknown as Record<string, string>);
 
     return `https://openapi.baidu.com/oauth/2.0/authorize?${searchParams}`;
   }
 
-  public async authorize(result: string): Promise<OAuthTokenResponse> {
+  public override async authorize(result: string): Promise<OAuthTokenResponse> {
     let token: OAuthTokenResponse;
 
     if (result.startsWith('http')) {
@@ -58,10 +59,10 @@ export class ImplicitGrant extends BaseOAuthClient {
       token = {
         access_token: result,
         expires_in: 2592000, // 默认30天
-        scope: this.config.scope as string,
+        scope: this.config.scope,
       };
     }
-    return token;
+    return Promise.resolve(token);
   }
 
   private parseTokenFromUrl(url: string): OAuthTokenResponse {
@@ -71,24 +72,24 @@ export class ImplicitGrant extends BaseOAuthClient {
 
   private parseTokenFromHash(hash: string): OAuthTokenResponse {
     const params = new URLSearchParams(hash);
-    const accessToken = params.get('access_token');
+    const accessToken = params.get('access_token') ?? '';
     const expiresIn = params.get('expires_in');
     const error = params.get('error');
 
-    if (error) {
+    if (Boolean(error)) {
       throw new Error(`OAuth error: ${error}`);
     }
 
-    if (!accessToken) {
+    if (!Boolean(accessToken)) {
       throw new Error('Access token not found');
     }
 
     return {
       access_token: accessToken,
-      expires_in: parseInt(expiresIn || '2592000', 10),
-      scope: params.get('scope') || this.config.scope as string,
-      session_key: params.get('session_key') || undefined,
-      session_secret: params.get('session_secret') || undefined,
+      expires_in: parseInt(expiresIn ?? '2592000', 10),
+      scope: params.get('scope') ?? this.config.scope,
+      session_key: params.get('session_key') ?? undefined,
+      session_secret: params.get('session_secret') ?? undefined,
     };
   }
 }

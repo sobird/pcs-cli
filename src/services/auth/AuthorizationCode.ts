@@ -72,6 +72,7 @@ export class AuthorizationCodeGrant extends BaseOAuthClient {
   // 获取授权URL
   public getAuthorizeURL(): string {
     const { client_secret, ...params } = this.config;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     const searchParams = new URLSearchParams(params as unknown as Record<string, string>);
 
     return `https://openapi.baidu.com/oauth/2.0/authorize?${searchParams}`;
@@ -115,11 +116,11 @@ export class AuthorizationCodeGrant extends BaseOAuthClient {
 
     // const state = urlObj.searchParams.get('state');
 
-    if (error) {
+    if (typeof error === 'string') {
       throw new Error(`OAuth error: ${error}`);
     }
 
-    if (!code) {
+    if (typeof code !== 'string') {
       throw new Error('Authorization code not found in callback URL');
     }
 

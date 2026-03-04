@@ -32,7 +32,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: pnpm
 
-      - name: Cache pnpm dependencies
+      - name: Cache Dependencies
         id: cache
         uses: actions/cache@v5
         with:

@@ -2,6 +2,7 @@
   "name": "pcs-cli",
   "type": "module",
   "version": "1.6.1",
+  "packageManager": "pnpm@10.30.2",
   "description": "Baidu Personal Cloud Storage's Command Line Interface.",
   "author": {
     "name": "sobird"
@@ -60,14 +61,14 @@
   },
   "devDependencies": {
     "@commander-js/extra-typings": "^14.0.0",
-    "@commitlint/cli": "^20.4.2",
-    "@commitlint/config-conventional": "^20.4.2",
+    "@commitlint/cli": "^20.4.3",
+    "@commitlint/config-conventional": "^20.4.3",
     "@types/bytes": "^3.1.5",
-    "@types/node": "^20.19.35",
+    "@types/node": "^25.3.3",
     "@types/progress": "^2.0.7",
     "@types/prompts": "^2.4.9",
     "eslint": "^10.0.2",
-    "eslint-config-sobird": "^1.0.4",
+    "eslint-config-sobird": "^1.0.5",
     "husky": "^9.1.7",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",

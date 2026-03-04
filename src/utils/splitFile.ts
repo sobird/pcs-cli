@@ -10,13 +10,13 @@ export async function splitFile(
   chunkSize: number,
   outputDir: string = mkdtempSync(join(tmpdir(), 'splitFile-')),
 ): Promise<string[]> {
-  if (!path || typeof path !== 'string') {
+  if (!Boolean(path) || typeof path !== 'string') {
     throw new TypeError('path must be a non-empty string');
   }
   if (!Number.isInteger(chunkSize) || chunkSize <= 0) {
     throw new TypeError('chunkSize must be a positive integer');
   }
-  if (!outputDir || typeof outputDir !== 'string') {
+  if (!Boolean(outputDir) || typeof outputDir !== 'string') {
     throw new TypeError('outputDir must be a non-empty string');
   }
 

@@ -5,7 +5,7 @@ declare module 'commander' {
 
 declare module 'cliui' {
   interface UIOptions {
-    width: number;
+    width?: number;
     wrap?: boolean;
     rows?: string[];
   }

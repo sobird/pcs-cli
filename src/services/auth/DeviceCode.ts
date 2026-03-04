@@ -24,7 +24,9 @@
 
 // https://openapi.baidu.com/oauth/2.0/authorize?response_type=code&client_id=58tGN6NF3c2rrFHz0SynM8ZEtfuSd5ZG&redirect_uri=oob&scope=basic,netdisk&device_id=42602234
 
-import { BaseOAuthClient, type OAuthClientConfig, type OAuthTokenResponse } from './OAuth';
+import {
+  BaseOAuthClient, type OAuthClientConfig, type OAuthTokenResponse,
+} from './OAuth';
 
 /**
  * 授权展示方式，既授权页面展示样式。
@@ -104,7 +106,7 @@ export class DeviceCodeGrant extends BaseOAuthClient {
     return data;
   }
 
-  public getAuthorizeURL(deviceCode: OAuthDeviceCodeResponse): string {
+  public override getAuthorizeURL(deviceCode: OAuthDeviceCodeResponse): string {
     return `${deviceCode.verification_url}?code=${deviceCode.user_code}`;
   }
 
