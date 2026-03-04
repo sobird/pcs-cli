@@ -1,7 +1,7 @@
 {
   "name": "pcs-cli",
   "type": "module",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "packageManager": "pnpm@10.30.2",
   "description": "Baidu Personal Cloud Storage's Command Line Interface.",
   "author": {

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.7.0](https://github.com/sobird/pcs-cli/compare/v1.6.1...v1.7.0) (2026-03-04)
+
+
+### Features
+
+* **eslint:** upgrade eslint-config-sobird to v1.0 ([942748e](https://github.com/sobird/pcs-cli/commit/942748e6a30b8a7e711b633d16d5ed4505e00c2d))
+
+
+### Bug Fixes
+
+* @commander-js/extra-typings ambient module setup ([b1e7cb1](https://github.com/sobird/pcs-cli/commit/b1e7cb15ebbe8624889d1940d764a21eb1082bb0))
+* cliui v9 need declare module 'cliui' types ([b9b4715](https://github.com/sobird/pcs-cli/commit/b9b47150e64fb5e438405bbba175491447b127b0))
+* npm run lint:fix ([78a92f8](https://github.com/sobird/pcs-cli/commit/78a92f87d0e55e3fcf25487a4048a502c5d679a7))
+* upgrade eslint-config-sobird to v1.0 ([1b9a074](https://github.com/sobird/pcs-cli/commit/1b9a0749cc43480c5bffc593e9167c8b1396f11d))
+
 ## [1.6.1](https://github.com/sobird/pcs-cli/compare/v1.6.0...v1.6.1) (2026-02-24)
 
 
