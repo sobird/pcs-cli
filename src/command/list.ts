@@ -13,9 +13,6 @@ export const listCommand = new Command('list')
   .action(async (path, options, { pcs }) => {
     try {
       const ui = cliui({});
-
-      console.log('pcs', pcs);
-
       const { list } = await pcs.list(path);
 
       list.map((item) => {
